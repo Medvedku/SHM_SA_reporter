@@ -57,6 +57,7 @@ def iso_week_range_from_end(end_date: datetime) -> tuple[int, int, datetime, dat
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Generate PDF report for a given week.")
     p.add_argument("--end-date", help="END date (YYYY-MM-DD) defining the ISO week; defaults to today", default=None)
+    p.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
     return p.parse_args()
 
 
@@ -73,7 +74,7 @@ else:
 # Compute ISO week and week range (Monday..Sunday)
 YEAR, WEEK_NO, START_DT, END_DT = iso_week_range_from_end(end_dt)
 
-OUTPUT = REPORT_DIR / f"weekly_report_{YEAR}_W{WEEK_NO}.pdf"
+OUTPUT = REPORT_DIR / f"{YEAR}_W{WEEK_NO}_weekly_report.pdf"
 
 BACKGROUND_IMG = STATIC_DIR / "Title_bckgrnd.png"
 FALLBACK_IMG = STATIC_DIR / "fig_missing.png"
@@ -99,7 +100,8 @@ for f in sorted(os.listdir(FONT_DIR)):
         pdfmetrics.registerFont(TTFont(name, str(path)))
         FONTS[name] = name
 
-print("Loaded fonts:", list(FONTS.keys()))
+if args.verbose:
+    print("Loaded fonts:", list(FONTS.keys()))
 
 
 # ============================================================
@@ -186,6 +188,8 @@ def draw_footer(c, page_no):
 # ============================================================
 
 c = canvas.Canvas(str(OUTPUT), pagesize=PAGE)
+c.setTitle(f"SHM Report – {YEAR}W{WEEK_NO}")
+
 
 # === Background image on title page ===
 try:
@@ -533,4 +537,5 @@ page_no += 1
 # ============================================================
 
 c.save()
-print(f"Generated: {OUTPUT}")
+if args.verbose:
+    print(f"Generated: {OUTPUT}")

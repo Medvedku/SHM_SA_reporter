@@ -71,12 +71,14 @@ def get_rss_kb(pid: int) -> int:
     return 0
 
 
-def make_cmd(python: str, end_date: Optional[str], yes: bool) -> list[str]:
+def make_cmd(python: str, end_date: Optional[str], yes: bool, verbose: bool) -> list[str]:
     cmd = [python, str(Path(__file__).resolve().parents[2] / "scr" / "plotting" / "run_full_report.py")]
     if end_date:
         cmd += ["--end-date", end_date]
     if yes:
         cmd += ["--yes"]
+    if verbose:
+        cmd += ["--verbose"]
     return cmd
 
 
@@ -87,12 +89,14 @@ def main() -> None:
     p.add_argument("--interval", help="Sampling interval in seconds", type=float, default=1.0)
     p.add_argument("--log", help="Path to JSON summary file", default=None)
     p.add_argument("--python", help="Python executable to run the runner", default=sys.executable)
+    p.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
 
     args = p.parse_args()
 
-    cmd = make_cmd(args.python, args.end_date, args.yes)
+    cmd = make_cmd(args.python, args.end_date, args.yes, args.verbose)
 
-    print("Launching:", " ".join(cmd))
+    if args.verbose:
+        print("Launching:", " ".join(cmd))
 
     start_ts = datetime.utcnow().isoformat()
     proc = subprocess.Popen(cmd)
@@ -108,7 +112,8 @@ def main() -> None:
             rss = get_rss_kb(proc.pid)
             peak_kb = max(peak_kb, rss)
             samples.append({"ts": datetime.utcnow().isoformat(), "rss_kb": rss})
-            print(f"[{len(samples)}] PID={proc.pid} RSS={rss} KB (peak {peak_kb} KB)")
+            if args.verbose:
+                print(f"[{len(samples)}] PID={proc.pid} RSS={rss} KB (peak {peak_kb} KB)")
             time.sleep(max(0.1, args.interval))
 
         # one last sample after exit
@@ -136,8 +141,11 @@ def main() -> None:
             outpath = Path.cwd() / f"ram_usage_{stamp}.json"
 
         outpath.write_text(json.dumps(summary, indent=2))
-        print(f"Wrote summary to: {outpath}")
-        print(f"Peak RSS: {peak_kb} KB. Exit code: {ret}")
+        
+        if args.verbose:
+            print(f"Wrote summary to: {outpath}")
+            print(f"Peak RSS: {peak_kb} KB. Exit code: {ret}")
+        
         sys.exit(ret)
 
     except KeyboardInterrupt:

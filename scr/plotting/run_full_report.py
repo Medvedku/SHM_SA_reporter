@@ -41,19 +41,22 @@ def iso_week_range_from_end(end_date_str: str) -> tuple[str, str]:
     return start_date.isoformat(), end_of_week.isoformat()
 
 
-def run_plotter(start_date: str | None, end_date: str | None) -> None:
+def run_plotter(start_date: str | None, end_date: str | None, verbose: bool = False) -> None:
     """Run the `plotter.py` script and pass start/end dates as CLI args when provided."""
     cmd = [sys.executable, str(PLOTTER_SCRIPT)]
     if start_date:
         cmd += ["--start-date", start_date]
     if end_date:
         cmd += ["--end-date", end_date]
+    if verbose:
+        cmd += ["--verbose"]
 
-    print(f"Running plotter: {' '.join(cmd)}")
+    if verbose:
+        print(f"Running plotter: {' '.join(cmd)}")
     subprocess.run(cmd, check=True)
 
 
-def run_reporter(end_date: str | None) -> None:
+def run_reporter(end_date: str | None, verbose: bool = False) -> None:
     """Run the `reporter.py` script to build the PDF report.
 
     If `end_date` is provided, pass it as `--end-date` to `reporter.py`.
@@ -61,8 +64,11 @@ def run_reporter(end_date: str | None) -> None:
     cmd = [sys.executable, str(REPORTER_SCRIPT)]
     if end_date:
         cmd += ["--end-date", end_date]
+    if verbose:
+        cmd += ["--verbose"]
 
-    print("Running reporter to generate PDF...")
+    if verbose:
+        print("Running reporter to generate PDF...")
     subprocess.run(cmd, check=True)
 
 
@@ -89,16 +95,18 @@ def generated_plot_paths() -> List[Path]:
     return paths
 
 
-def clean_plots(confirm: bool) -> int:
+def clean_plots(confirm: bool, verbose: bool = False) -> int:
     """Delete generated plot files. Returns number of deleted files."""
     files = generated_plot_paths()
     existing = [p for p in files if p.exists()]
 
     if not existing:
-        print("No generated plot files found to delete.")
+        if verbose:
+            print("No generated plot files found to delete.")
         return 0
 
-    print(f"Found {len(existing)} files to delete in {PLOTS_DIR}")
+    if verbose:
+        print(f"Found {len(existing)} files to delete in {PLOTS_DIR}")
 
     if not confirm:
         ans = input("Delete these files? [y/N]: ").strip().lower()
@@ -111,11 +119,13 @@ def clean_plots(confirm: bool) -> int:
         try:
             p.unlink()
             deleted += 1
-            print(f"Deleted: {p.name}")
+            if verbose:
+                print(f"Deleted: {p.name}")
         except Exception as e:
             print(f"Failed to delete {p}: {e}")
 
-    print(f"Deleted {deleted} files.")
+    if verbose:
+        print(f"Deleted {deleted} files.")
     return deleted
 
 
@@ -123,6 +133,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Generate plots, create report, then clean plots.")
     parser.add_argument("--end-date", help="END date (YYYY-MM-DD) to provide to plotter.py", default=None)
     parser.add_argument("--yes", help="Assume yes for deletion prompts", action="store_true")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
 
     args = parser.parse_args()
 
@@ -135,20 +146,20 @@ def main() -> None:
 
     # 1) Run plotter (may prompt if dates not provided)
     try:
-        run_plotter(start_date, end_date)
+        run_plotter(start_date, end_date, verbose=args.verbose)
     except subprocess.CalledProcessError as e:
         print(f"plotter.py failed with exit code {e.returncode}")
         sys.exit(e.returncode)
 
     # 2) Run reporter
     try:
-        run_reporter(args.end_date)
+        run_reporter(args.end_date, verbose=args.verbose)
     except subprocess.CalledProcessError as e:
         print(f"reporter.py failed with exit code {e.returncode}")
         sys.exit(e.returncode)
 
     # 3) Clean up generated plot images
-    clean_plots(confirm=args.yes)
+    clean_plots(confirm=args.yes, verbose=args.verbose)
 
 
 if __name__ == "__main__":

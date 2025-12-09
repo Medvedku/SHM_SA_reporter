@@ -7,6 +7,17 @@ import argparse
 
 
 # ============================================================
+# ARGUMENTS & SETUP
+# ============================================================
+
+parser = argparse.ArgumentParser(description="Generate plots for a given time window.")
+parser.add_argument("--end-date", help="END date (YYYY-MM-DD)")
+parser.add_argument("--start-date", help="START date (YYYY-MM-DD). If omitted, start = end - 7 days")
+parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
+args = parser.parse_args()
+
+
+# ============================================================
 # LOAD CONFIG PATHS
 # ============================================================
 
@@ -19,7 +30,8 @@ with open(CONFIG_PATH, "r") as f:
 # Path to external .duckdb file (your case)
 DB_FILE = Path(paths.get("database_path", "/home/moshe/Documents/GitHub/SA_analysis/SA_analysis/database/shm.duckdb"))
 
-print("Using DB:", DB_FILE)
+if args.verbose:
+    print("Using DB:", DB_FILE)
 
 
 # ============================================================
@@ -27,18 +39,13 @@ print("Using DB:", DB_FILE)
 # ============================================================
 
 con = duckdb.connect(str(DB_FILE))
-print(con.execute("PRAGMA database_list").df())
+if args.verbose:
+    print(con.execute("PRAGMA database_list").df())
 
 
 # ============================================================
 # DEFINE ANALYSIS WINDOW
 # ============================================================
-
-# Parse CLI args or prompt for END date
-parser = argparse.ArgumentParser(description="Generate plots for a given time window.")
-parser.add_argument("--end-date", help="END date (YYYY-MM-DD)")
-parser.add_argument("--start-date", help="START date (YYYY-MM-DD). If omitted, start = end - 7 days")
-args = parser.parse_args()
 
 if args.end_date:
     END_DT = pd.to_datetime(args.end_date)
@@ -52,17 +59,18 @@ else:
     END_DT = pd.to_datetime(END_DT_plain)
     START_DT = END_DT - pd.Timedelta(days=7)
 
-print(f"Using analysis window:")
-print(f"  START_DT = {START_DT}")
-print(f"  END_DT   = {END_DT}")
-
+if args.verbose:
+    print(f"Using analysis window:")
+    print(f"  START_DT = {START_DT}")
+    print(f"  END_DT   = {END_DT}")
 
 
 # ============================================================
 # RUN ALL PLOTS
 # ============================================================
 
-print("\n=== Generating Temperature Plots ===")
+if args.verbose:
+    print("\n=== Generating Temperature Plots ===")
 plot_functions.temps_col(
     con,
     start_dt=START_DT,
@@ -80,7 +88,8 @@ plot_functions.temps_arch(
 )
 
 
-print("\n=== Generating FFT + KDE Plots ===")
+if args.verbose:
+    print("\n=== Generating FFT + KDE Plots ===")
 for sid in ["A30", "A31", "A32", "A33", "A34", "A35"]:
     plot_functions.fft_with_KDE_plot(
         con,
@@ -93,7 +102,8 @@ for sid in ["A30", "A31", "A32", "A33", "A34", "A35"]:
     )
 
 
-print("\n=== Generating Strain-Temperature Plots ===")
+if args.verbose:
+    print("\n=== Generating Strain-Temperature Plots ===")
 for sid in [
     "S7","S8","S9","S10","S11","S12","S13","S14",
     "S15","S16","S17","S18",
@@ -110,7 +120,8 @@ for sid in [
     )
 
 
-print("\n=== Generating Accel Daily Grid Plots ===")
+if args.verbose:
+    print("\n=== Generating Accel Daily Grid Plots ===")
 for sid in ["A30", "A31", "A32", "A33", "A34", "A35"]:
     plot_functions.accel_v_daily_grid(
         con,
@@ -121,4 +132,5 @@ for sid in ["A30", "A31", "A32", "A33", "A34", "A35"]:
         save=True
     )
 
-print("\n=== ALL PLOTS GENERATED ===\n")
+if args.verbose:
+    print("\n=== ALL PLOTS GENERATED ===\n")

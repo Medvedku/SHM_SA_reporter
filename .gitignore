@@ -1,3 +1,4 @@
 Rep_VENV
-plots
+plots/*
 *.pdf
+.env*

@@ -642,13 +642,22 @@ def accel_v_daily_grid(con, sensor_id,
 
     # For daily grid we operate on date boundaries
     start_day = pd.to_datetime(start_dt).normalize()
-    end_day   = pd.to_datetime(end_dt).normalize()
+    end_day = pd.to_datetime(end_dt).normalize()
 
-    # Include last day if end_dt is after its midnight
-    num_days = (end_day - start_day).days + 1
-    if num_days <= 0:
+    # Inclusive day count between start_day..end_day
+    total_days = (end_day - start_day).days + 1
+    if total_days <= 0:
         print("Invalid time window for accel_v_daily_grid.")
         return None
+
+    # Ensure the grid covers at most 7 days (last 7 full days).
+    MAX_DAYS = 7
+    if total_days > MAX_DAYS:
+        # Trim the start_day so the window is exactly MAX_DAYS ending on end_day
+        start_day = end_day - pd.Timedelta(days=MAX_DAYS - 1)
+        total_days = MAX_DAYS
+
+    num_days = total_days
 
     # 3) Load & aggregate by minute
     query = f"""
@@ -741,7 +750,7 @@ def accel_v_daily_grid(con, sensor_id,
     )
     fig.text(
         0.5, 0.90,
-        f"{day_labels[0]} – {day_labels[-1]} (last 7 full days)",
+        f"{day_labels[0]} – {day_labels[-1]} (last {num_days} full days)",
         ha="center",
         fontproperties=LABEL_FONT,
         fontsize=10,

@@ -3,6 +3,7 @@ import pandas as pd
 from pathlib import Path
 import json
 import plot_functions
+import argparse
 
 
 # ============================================================
@@ -33,9 +34,28 @@ print(con.execute("PRAGMA database_list").df())
 # DEFINE ANALYSIS WINDOW
 # ============================================================
 
-# Example: Start at 10 Nov 2025 → end automatically = MAX(datetime)
-END_DT = pd.to_datetime("2025-04-10")
-START_DT = END_DT - pd.Timedelta(days=7)
+# Parse CLI args or prompt for END date
+parser = argparse.ArgumentParser(description="Generate plots for a given time window.")
+parser.add_argument("--end-date", help="END date (YYYY-MM-DD)")
+parser.add_argument("--start-date", help="START date (YYYY-MM-DD). If omitted, start = end - 7 days")
+args = parser.parse_args()
+
+if args.end_date:
+    END_DT = pd.to_datetime(args.end_date)
+    if args.start_date:
+        START_DT = pd.to_datetime(args.start_date)
+    else:
+        START_DT = END_DT - pd.Timedelta(days=7)
+else:
+    # Backwards-compatible interactive prompt
+    END_DT_plain = input("Enter END date (YYYY-MM-DD): ").strip()
+    END_DT = pd.to_datetime(END_DT_plain)
+    START_DT = END_DT - pd.Timedelta(days=7)
+
+print(f"Using analysis window:")
+print(f"  START_DT = {START_DT}")
+print(f"  END_DT   = {END_DT}")
+
 
 
 # ============================================================

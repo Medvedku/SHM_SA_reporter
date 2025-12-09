@@ -1,7 +1,8 @@
 import os
 import json
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timedelta
+import argparse
 
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4, landscape
@@ -35,16 +36,50 @@ REPORT_DIR = PROJECT_ROOT / paths["report_dir"]
 REPORT_DIR.mkdir(parents=True, exist_ok=True)
 
 # ========= BASIC REPORT CONFIG =========
-YEAR    = 2025
-WEEK_NO = 47
+
+
+def iso_week_range_from_end(end_date: datetime) -> tuple[int, int, datetime, datetime]:
+    """Given an end date (a date or datetime), return (iso_year, iso_week, start_dt, end_dt)
+
+    start_dt is the Monday of that ISO week and end_dt is the Sunday.
+    """
+    if isinstance(end_date, datetime):
+        end_date = end_date.date()
+
+    iso_year, iso_week, weekday = end_date.isocalendar()
+    # weekday: Monday=1 .. Sunday=7
+    start_date = end_date - timedelta(days=weekday - 1)
+    end_of_week = start_date + timedelta(days=6)
+    # return as datetimes at midnight for compatibility with existing code
+    return iso_year, iso_week, datetime.combine(start_date, datetime.min.time()), datetime.combine(end_of_week, datetime.min.time())
+
+
+def parse_args() -> argparse.Namespace:
+    p = argparse.ArgumentParser(description="Generate PDF report for a given week.")
+    p.add_argument("--end-date", help="END date (YYYY-MM-DD) defining the ISO week; defaults to today", default=None)
+    return p.parse_args()
+
+
+args = parse_args()
+
+if args.end_date:
+    try:
+        end_dt = datetime.strptime(args.end_date, "%Y-%m-%d")
+    except Exception:
+        raise SystemExit("--end-date must be in YYYY-MM-DD format")
+else:
+    end_dt = datetime.today()
+
+# Compute ISO week and week range (Monday..Sunday)
+YEAR, WEEK_NO, START_DT, END_DT = iso_week_range_from_end(end_dt)
 
 OUTPUT = REPORT_DIR / f"weekly_report_{YEAR}_W{WEEK_NO}.pdf"
 
 BACKGROUND_IMG = STATIC_DIR / "Title_bckgrnd.png"
 FALLBACK_IMG = STATIC_DIR / "fig_missing.png"
 
-DATE_FROM = datetime(2025, 11, 17).strftime("%d. %b. %Y")
-DATE_TO   = datetime(2025, 11, 23).strftime("%d. %b. %Y")
+DATE_FROM = START_DT.strftime("%d. %b. %Y")
+DATE_TO = END_DT.strftime("%d. %b. %Y")
 
 # ========= PAGE SETTINGS =========
 PAGE = landscape(A4)

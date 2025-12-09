@@ -1,0 +1,9 @@
+{
+    "data_dir": "data/",
+    "temp_dir": "tmp/",
+    "report_dir": "reports/",
+    "plots_dir": "plots/",
+    "parquet_dir": "data/parquet/",
+    "font_dir": "font_Montserrat/",
+    "static_dir": "static/"
+}

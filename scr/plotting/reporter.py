@@ -188,7 +188,7 @@ def draw_footer(c, page_no):
 # ============================================================
 
 c = canvas.Canvas(str(OUTPUT), pagesize=PAGE)
-c.setTitle(f"SHM Report – {YEAR}W{WEEK_NO}")
+c.setTitle(f"{DATE_FROM} ~ {DATE_TO}")
 
 
 # === Background image on title page ===
@@ -273,8 +273,8 @@ for num in range(7, 30):
     page_cursor += 1
 
 # 3) Temperatures
-TOC_ENTRIES.append(("Temperatures — Column Summary", page_cursor)); page_cursor += 1
 TOC_ENTRIES.append(("Temperatures — Arch Summary",   page_cursor)); page_cursor += 1
+TOC_ENTRIES.append(("Temperatures — Column Summary", page_cursor)); page_cursor += 1
 
 # -------- LAYOUT SETTINGS (2 COLUMNS) --------
 FONT_SIZE = 10

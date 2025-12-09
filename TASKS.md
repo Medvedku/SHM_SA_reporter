@@ -1,0 +1,1 @@
+Need to change databse paths in plotter.py and run_full_report.py to use the database in the config file.

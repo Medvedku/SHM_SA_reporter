@@ -2,3 +2,8 @@ Rep_VENV
 plots/*
 *.pdf
 .env
+
+email_variant_1.html
+email_variant_2.html
+email_variant_3.html
+email_variant_4.html

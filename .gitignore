@@ -2,6 +2,12 @@ Rep_VENV
 plots/*
 *.pdf
 .env
+*.parquet
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
 
 email_variant_1.html
 email_variant_2.html

@@ -71,3 +71,10 @@ def make_sst_schema(hub):
     for t in HUBS[hub]["T"]:
         fields.append(pa.field(t, pa.float32()))
     return pa.schema(fields)
+
+# List of final tables we always expect
+TABLE_KEYS = [
+    "accel_all",
+    "fft_hub1", "fft_hub2", "fft_hub3", "fft_hub4",
+    "sst_hub1", "sst_hub2", "sst_hub3", "sst_hub4",
+]

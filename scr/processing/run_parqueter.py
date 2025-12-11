@@ -8,7 +8,7 @@ load_dotenv()
 
 MONGO_URI = os.getenv("MONGODB_URI")
 client = pymongo.MongoClient(MONGO_URI)
-collection = client["SteelArena"]["PRJ-16"]
+collection = client["prod"]["PRJ-16"]
 
 start_dt, end_dt, y, w = compute_week_boundaries()
 

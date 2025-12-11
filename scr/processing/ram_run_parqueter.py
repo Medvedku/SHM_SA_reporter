@@ -1,12 +1,18 @@
 # run_parqueter.py
+
+import parqueter_v2.processor as p
+print("USING processor:", p.__file__)
+
+
 import os
 import psutil
 import time
 from dotenv import load_dotenv
 import pymongo
 
-from parqueter_v2.helpers import compute_week_boundaries
 from parqueter_v2.processor import process_week
+from parqueter_v2.helpers import compute_week_boundaries
+
 
 
 def get_ram_mb():
@@ -18,7 +24,7 @@ def main():
 
     MONGO_URI = os.getenv("MONGODB_URI")
     client = pymongo.MongoClient(MONGO_URI)
-    collection = client["SteelArena"]["PRJ-16"]
+    collection = client["prod"]["PRJ-16"]
 
     start_dt, end_dt, y, w = compute_week_boundaries()
 

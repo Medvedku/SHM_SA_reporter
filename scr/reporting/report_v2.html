@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHM Week Report - Browser V2</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f5f6f7;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .vhs-stripes {
+            height: 6px;
+            width: 100%;
+        }
+
+        .bg-1 {
+            background-color: #531a46;
+        }
+
+        .bg-2 {
+            background-color: #9f1e34;
+        }
+
+        .bg-3 {
+            background-color: #d82b2c;
+        }
+
+        .bg-4 {
+            background-color: #e4532e;
+        }
+
+        .bg-5 {
+            background-color: #eea83a;
+        }
+
+        .header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #531a46;
+        }
+
+        .report-meta {
+            display: inline-block;
+            border-bottom: 2px solid #eea83a;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            color: #531a46;
+            font-weight: bold;
+        }
+
+        /* Main Tabs (Top) */
+        .main-tabs {
+            display: flex;
+            justify-content: center;
+            background: #f5f6f7;
+            padding: 10px 10px 0 10px;
+            border-bottom: 4px solid #531a46;
+        }
+
+        .main-tab-btn {
+            padding: 12px 24px;
+            margin-right: 4px;
+            border: 2px solid #531a46;
+            border-bottom: none;
+            background: #e0e0e0;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #531a46;
+            transition: all 0.2s;
+        }
+
+        .main-tab-btn:hover {
+            background: #eea83a;
+            color: #fff;
+        }
+
+        .main-tab-btn.active {
+            background: #531a46;
+            color: #fff;
+        }
+
+        /* Sub Tabs (Secondary) */
+        .sub-tab-container {
+            background: #e0e0e0;
+            padding: 10px;
+            border-bottom: 2px solid #ccc;
+            text-align: center;
+            /* Center aligning buttons */
+        }
+
+        .sub-tab-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 4px;
+            background: #fff;
+            border: 1px solid #531a46;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #531a46;
+            transition: all 0.2s;
+            box-shadow: 2px 2px 0 #9f1e34;
+        }
+
+        .sub-tab-btn:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0 #9f1e34;
+        }
+
+        .sub-tab-btn.active {
+            background: #531a46;
+            color: #fff;
+            box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
+            transform: translate(1px, 1px);
+        }
+
+        /* Content Area */
+        .tab-content {
+            display: none;
+            flex-direction: column;
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        .view-area {
+            flex: 1;
+            padding: 20px;
+            background: #fff;
+            min-height: 750px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 750px;
+            border: none;
+            display: none;
+            /* Hide all by default */
+        }
+
+        iframe.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 0.8em;
+            color: #531a46;
+            background-color: #f9f9f9;
+            border-top: 1px solid #ddd;
+        }
+
+        /* Strain Grid Nav */
+        .strain-grid-nav {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            padding: 10px;
+            background: #e0e0e0;
+            border-bottom: 2px solid #ccc;
+        }
+
+        .strain-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .strain-col h4 {
+            margin: 0 0 5px 0;
+            font-size: 11px;
+            text-align: center;
+            color: #531a46;
+            text-transform: uppercase;
+            border-bottom: 1px solid #9f1e34;
+            padding-bottom: 2px;
+        }
+
+        .strain-col .sub-tab-btn {
+            width: 100%;
+            margin: 2px 0;
+            box-sizing: border-box;
+            text-align: left;
+            padding: 6px 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Top Stripes -->
+        <div class="vhs-stripes bg-1"></div>
+        <div class="vhs-stripes bg-2"></div>
+        <div class="vhs-stripes bg-3"></div>
+        <div class="vhs-stripes bg-4"></div>
+        <div class="vhs-stripes bg-5"></div>
+
+        <!-- Header -->
+        <div class="header">
+            <div class="report-meta">PRJ-16 // WEEK V2 // {iso_week}</div>
+            <h2>STEEL ARENA MONITORING</h2>
+        </div>
+
+        <!-- Main Navigation -->
+        <div class="main-tabs">
+            <button class="main-tab-btn active" onclick="openMainTab('vibration')">Vibration</button>
+            <button class="main-tab-btn" onclick="openMainTab('fft')">FFT Analysis</button>
+            <button class="main-tab-btn" onclick="openMainTab('strain')">Strain</button>
+            <button class="main-tab-btn" onclick="openMainTab('temperature')">Temperature</button>
+        </div>
+
+        <!-- VIBRATION TAB -->
+        <div id="vibration" class="tab-content active">
+            <div class="sub-tab-container">
+                <button class="sub-tab-btn active" onclick="openSubTab('vibration', 'v_A30')">A30 (Arch North)</button>
+                <button class="sub-tab-btn" onclick="openSubTab('vibration', 'v_A31')">A31 (Arch Middle)</button>
+                <button class="sub-tab-btn" onclick="openSubTab('vibration', 'v_A32')">A32 (Arch South)</button>
+                <button class="sub-tab-btn" onclick="openSubTab('vibration', 'v_A33')">A33 (Column Bottom)</button>
+                <button class="sub-tab-btn" onclick="openSubTab('vibration', 'v_A34')">A34 (Column Middle)</button>
+                <button class="sub-tab-btn" onclick="openSubTab('vibration', 'v_A35')">A35 (Column Top)</button>
+            </div>
+            <div class="view-area">
+                <iframe id="v_A30" src="../../plots/A30_daily_v_grid.html" class="active"></iframe>
+                <iframe id="v_A31" src="../../plots/A31_daily_v_grid.html"></iframe>
+                <iframe id="v_A32" src="../../plots/A32_daily_v_grid.html"></iframe>
+                <iframe id="v_A33" src="../../plots/A33_daily_v_grid.html"></iframe>
+                <iframe id="v_A34" src="../../plots/A34_daily_v_grid.html"></iframe>
+                <iframe id="v_A35" src="../../plots/A35_daily_v_grid.html"></iframe>
+            </div>
+        </div>
+
+        <!-- FFT TAB -->
+        <div id="fft" class="tab-content">
+            <div class="sub-tab-container">
+                <button class="sub-tab-btn active" onclick="openSubTab('fft', 'f_A30')">A30 (Arch North)</button>
+                <button class="sub-tab-btn" onclick="openSubTab('fft', 'f_A31')">A31 (Arch Middle)</button>
+                <button class="sub-tab-btn" onclick="openSubTab('fft', 'f_A32')">A32 (Arch South)</button>
+                <button class="sub-tab-btn" onclick="openSubTab('fft', 'f_A33')">A33 (Column Bottom)</button>
+                <button class="sub-tab-btn" onclick="openSubTab('fft', 'f_A34')">A34 (Column Middle)</button>
+                <button class="sub-tab-btn" onclick="openSubTab('fft', 'f_A35')">A35 (Column Top)</button>
+            </div>
+            <div class="view-area">
+                <iframe id="f_A30" src="../../plots/A30_fft_kde.html" class="active"></iframe>
+                <iframe id="f_A31" src="../../plots/A31_fft_kde.html"></iframe>
+                <iframe id="f_A32" src="../../plots/A32_fft_kde.html"></iframe>
+                <iframe id="f_A33" src="../../plots/A33_fft_kde.html"></iframe>
+                <iframe id="f_A34" src="../../plots/A34_fft_kde.html"></iframe>
+                <iframe id="f_A35" src="../../plots/A35_fft_kde.html"></iframe>
+            </div>
+        </div>
+
+        <!-- STRAIN TAB -->
+        <div id="strain" class="tab-content">
+            <div class="strain-grid-nav" id="strain-nav">
+                <!-- Column 1: Arch, Section 1 -->
+                <div class="strain-col">
+                    <h4>Arch Section 1</h4>
+                    <button class="sub-tab-btn active" onclick="openSubTab('strain', 's_s7')">S7 (Top)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s8')">S8 (Diag)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s10')">S10 (Bot L)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s9')">S9 (Bot R)</button>
+                </div>
+                <!-- Column 2: Arch, Section 2 -->
+                <div class="strain-col">
+                    <h4>Arch Section 2</h4>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s13')">S13 (Top)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s11')">S11 (Diagonal)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s14')">S14 (Bottom Left)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s12')">S12 (Bottom Right)</button>
+                </div>
+                <!-- Column 3: Arch, Section 3 -->
+                <div class="strain-col">
+                    <h4>Arch Section 3</h4>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s16')">S16 (Top)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s15')">S15 (Diagonal)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s17')">S17 (Bottom Left)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s18')">S18 (Bottom Right)</button>
+                </div>
+                <!-- Column 4: Arch, Section 4 -->
+                <div class="strain-col">
+                    <h4>Arch Section 4</h4>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s25')">S25 (Top)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s22')">S22 (Diagonal)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s26')">S26 (Bottom Left)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s23')">S23 (Bottom Right)</button>
+                </div>
+                <!-- Column 5: Arch, Section 5 -->
+                <div class="strain-col">
+                    <h4>Arch Section 5</h4>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s21')">S21 (Top)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s24')">S24 (Diagonal)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s19')">S19 (Bottom Left)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s20')">S20 (Bottom Right)</button>
+                </div>
+                <!-- Column 6: Column Sensors -->
+                <div class="strain-col">
+                    <h4>Column</h4>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s27')">S27 (Bottom)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s28')">S28 (Middle)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s29')">S29 (Top)</button>
+                </div>
+            </div>
+
+            <div class="view-area">
+                <iframe id="s_s7" src="../../plots/S7_strain_temp.html" class="active"></iframe>
+                <iframe id="s_s8" src="../../plots/S8_strain_temp.html"></iframe>
+                <iframe id="s_s9" src="../../plots/S9_strain_temp.html"></iframe>
+                <iframe id="s_s10" src="../../plots/S10_strain_temp.html"></iframe>
+                <iframe id="s_s11" src="../../plots/S11_strain_temp.html"></iframe>
+                <iframe id="s_s12" src="../../plots/S12_strain_temp.html"></iframe>
+                <iframe id="s_s13" src="../../plots/S13_strain_temp.html"></iframe>
+                <iframe id="s_s14" src="../../plots/S14_strain_temp.html"></iframe>
+                <iframe id="s_s15" src="../../plots/S15_strain_temp.html"></iframe>
+                <iframe id="s_s16" src="../../plots/S16_strain_temp.html"></iframe>
+                <iframe id="s_s17" src="../../plots/S17_strain_temp.html"></iframe>
+                <iframe id="s_s18" src="../../plots/S18_strain_temp.html"></iframe>
+                <iframe id="s_s19" src="../../plots/S19_strain_temp.html"></iframe>
+                <iframe id="s_s20" src="../../plots/S20_strain_temp.html"></iframe>
+                <iframe id="s_s21" src="../../plots/S21_strain_temp.html"></iframe>
+                <iframe id="s_s22" src="../../plots/S22_strain_temp.html"></iframe>
+                <iframe id="s_s23" src="../../plots/S23_strain_temp.html"></iframe>
+                <iframe id="s_s24" src="../../plots/S24_strain_temp.html"></iframe>
+                <iframe id="s_s25" src="../../plots/S25_strain_temp.html"></iframe>
+                <iframe id="s_s26" src="../../plots/S26_strain_temp.html"></iframe>
+                <iframe id="s_s27" src="../../plots/S27_strain_temp.html"></iframe>
+                <iframe id="s_s28" src="../../plots/S28_strain_temp.html"></iframe>
+                <iframe id="s_s29" src="../../plots/S29_strain_temp.html"></iframe>
+            </div>
+        </div>
+
+        <!-- TEMP TAB -->
+        <div id="temperature" class="tab-content">
+            <div class="sub-tab-container">
+                <button class="sub-tab-btn active" onclick="openSubTab('temperature', 't_arch')">Temp Arch</button>
+                <button class="sub-tab-btn" onclick="openSubTab('temperature', 't_col')">Temp Column</button>
+            </div>
+            <div class="view-area">
+                <iframe id="t_arch" src="../../plots/temps_arch_plotly.html" class="active"></iframe>
+                <iframe id="t_col" src="../../plots/temps_col_plotly.html"></iframe>
+            </div>
+        </div>
+
+        <!-- Bottom Stripes -->
+        <div class="vhs-stripes bg-5"></div>
+        <div class="vhs-stripes bg-4"></div>
+        <div class="vhs-stripes bg-3"></div>
+        <div class="vhs-stripes bg-2"></div>
+        <div class="vhs-stripes bg-1"></div>
+
+        <div class="footer">
+            System Report :: SHM_SA_reporter :: Rubint Technologies
+        </div>
+    </div>
+
+    <script>
+        function openMainTab(tabId) {
+            // Hide all main tabs
+            var tabs = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove("active");
+                // Also hide this via display:none logic just in case CSS flex interferes
+                tabs[i].style.display = "none";
+            }
+
+            // Deactivate all main buttons
+            var btns = document.getElementsByClassName("main-tab-btn");
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.remove("active");
+            }
+
+            // Show target tab
+            var target = document.getElementById(tabId);
+            target.style.display = "flex";
+            setTimeout(() => target.classList.add("active"), 10); // logic fix
+
+            // Activate button
+            event.currentTarget.classList.add("active");
+        }
+
+        function openSubTab(parentId, frameId) {
+            // Parent context
+            var parent = document.getElementById(parentId);
+
+            // Deactivate sub-buttons in this context
+            // Note: We need to search deeper now because of the grid structure in 'strain'
+            // Using querySelectorAll to find all buttons within the parent container
+            var btns = parent.querySelectorAll(".sub-tab-btn");
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.remove("active");
+            }
+
+            // Hide all iframes in this context
+            var frames = parent.getElementsByTagName("iframe");
+            for (var i = 0; i < frames.length; i++) {
+                frames[i].classList.remove("active");
+            }
+
+            // Activate clicked button
+            event.currentTarget.classList.add("active");
+
+            // Show target iframe
+            document.getElementById(frameId).classList.add("active");
+        }
+
+        // Init state: ensure display is correct on load
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("vibration").style.display = "flex";
+        });
+    </script>
+
+</body>
+
+</html>

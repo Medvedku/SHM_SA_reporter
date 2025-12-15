@@ -1,5 +1,6 @@
 Rep_VENV
 plots/*
+reports/*
 *.pdf
 .env
 *.parquet

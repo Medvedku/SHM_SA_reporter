@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHM Week Report - Browser V2</title>
+    <title>{YEAR}W{ISOWEEK}_SHM_Weekly_Report</title>
     <style>
         body {
             font-family: 'Courier New', Courier, monospace;
@@ -23,6 +23,8 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            position: relative;
+            /* Context for absolute positioning of tabs */
         }
 
         .vhs-stripes {
@@ -52,8 +54,23 @@
 
         .header {
             padding: 20px;
-            text-align: center;
             border-bottom: 2px solid #531a46;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-logo {
+            height: 80px;
+            width: auto;
+        }
+
+        .header-text {
+            text-align: right;
+        }
+
+        .header h2 {
+            margin: 5px 0 0 0;
         }
 
         .report-meta {
@@ -135,19 +152,37 @@
 
         /* Content Area */
         .tab-content {
-            display: none;
+            /* Always display flex to ensure layout is calculated even when hidden */
+            display: flex !important;
             flex-direction: column;
+            width: 100%;
+
+            /* Hide off-screen instead of display: none */
+            position: absolute;
+            left: -9999px;
+            top: 0;
+            opacity: 0;
+            visibility: hidden;
+            z-index: -1;
         }
 
         .tab-content.active {
-            display: flex;
+            /* Restore to flow */
+            position: relative;
+            left: auto;
+            top: auto;
+            opacity: 1;
+            visibility: visible;
+            z-index: 1;
         }
 
         .view-area {
             flex: 1;
-            padding: 20px;
+            padding: 0;
             background: #fff;
             min-height: 750px;
+            width: 100%;
+            /* Force full width */
         }
 
         iframe {
@@ -155,12 +190,11 @@
             height: 750px;
             border: none;
             display: none;
-            /* Hide all by default */
         }
 
         iframe.active {
             display: block;
-            animation: fadeIn 0.5s;
+            /* Animation removed to prevent layout thrashing for Plotly */
         }
 
         @keyframes fadeIn {
@@ -229,9 +263,22 @@
 
         <!-- Header -->
         <div class="header">
-            <div class="report-meta">PRJ-16 // WEEK V2 // {iso_week}</div>
-            <h2>STEEL ARENA MONITORING</h2>
+            <img src="https://rubint.sk/data/imgs/rt_logo/rt_logo_borders.svg" alt="Rubint Technologies"
+                class="header-logo">
+
+            <div class="header-text">
+                <div class="report-meta">
+                    PRJ-16 // YEAR {2025} // WEEK {50}
+                </div>
+                <div class="report-meta-dates">
+                    <span><b>from:</b> {01. December 2025}</span><br>
+                    <span><b>to:</b> {06. December 2025}</span>
+                </div>
+
+                <h2>STEEL ARENA MONITORING</h2>
+            </div>
         </div>
+
 
         <!-- Main Navigation -->
         <div class="main-tabs">
@@ -252,12 +299,12 @@
                 <button class="sub-tab-btn" onclick="openSubTab('vibration', 'v_A35')">A35 (Column Top)</button>
             </div>
             <div class="view-area">
-                <iframe id="v_A30" src="../../plots/A30_daily_v_grid.html" class="active"></iframe>
-                <iframe id="v_A31" src="../../plots/A31_daily_v_grid.html"></iframe>
-                <iframe id="v_A32" src="../../plots/A32_daily_v_grid.html"></iframe>
-                <iframe id="v_A33" src="../../plots/A33_daily_v_grid.html"></iframe>
-                <iframe id="v_A34" src="../../plots/A34_daily_v_grid.html"></iframe>
-                <iframe id="v_A35" src="../../plots/A35_daily_v_grid.html"></iframe>
+                <iframe id="v_A30" data-src="../../plots/A30_daily_v_grid.html" class="active"></iframe>
+                <iframe id="v_A31" data-src="../../plots/A31_daily_v_grid.html"></iframe>
+                <iframe id="v_A32" data-src="../../plots/A32_daily_v_grid.html"></iframe>
+                <iframe id="v_A33" data-src="../../plots/A33_daily_v_grid.html"></iframe>
+                <iframe id="v_A34" data-src="../../plots/A34_daily_v_grid.html"></iframe>
+                <iframe id="v_A35" data-src="../../plots/A35_daily_v_grid.html"></iframe>
             </div>
         </div>
 
@@ -272,12 +319,12 @@
                 <button class="sub-tab-btn" onclick="openSubTab('fft', 'f_A35')">A35 (Column Top)</button>
             </div>
             <div class="view-area">
-                <iframe id="f_A30" src="../../plots/A30_fft_kde.html" class="active"></iframe>
-                <iframe id="f_A31" src="../../plots/A31_fft_kde.html"></iframe>
-                <iframe id="f_A32" src="../../plots/A32_fft_kde.html"></iframe>
-                <iframe id="f_A33" src="../../plots/A33_fft_kde.html"></iframe>
-                <iframe id="f_A34" src="../../plots/A34_fft_kde.html"></iframe>
-                <iframe id="f_A35" src="../../plots/A35_fft_kde.html"></iframe>
+                <iframe id="f_A30" data-src="../../plots/A30_fft_kde.html" class="active"></iframe>
+                <iframe id="f_A31" data-src="../../plots/A31_fft_kde.html"></iframe>
+                <iframe id="f_A32" data-src="../../plots/A32_fft_kde.html"></iframe>
+                <iframe id="f_A33" data-src="../../plots/A33_fft_kde.html"></iframe>
+                <iframe id="f_A34" data-src="../../plots/A34_fft_kde.html"></iframe>
+                <iframe id="f_A35" data-src="../../plots/A35_fft_kde.html"></iframe>
             </div>
         </div>
 
@@ -288,9 +335,9 @@
                 <div class="strain-col">
                     <h4>Arch Section 1</h4>
                     <button class="sub-tab-btn active" onclick="openSubTab('strain', 's_s7')">S7 (Top)</button>
-                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s8')">S8 (Diag)</button>
-                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s10')">S10 (Bot L)</button>
-                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s9')">S9 (Bot R)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s8')">S8 (Diagonal)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s10')">S10 (Bottom Left)</button>
+                    <button class="sub-tab-btn" onclick="openSubTab('strain', 's_s9')">S9 (Bottom Right)</button>
                 </div>
                 <!-- Column 2: Arch, Section 2 -->
                 <div class="strain-col">
@@ -334,41 +381,41 @@
             </div>
 
             <div class="view-area">
-                <iframe id="s_s7" src="../../plots/S7_strain_temp.html" class="active"></iframe>
-                <iframe id="s_s8" src="../../plots/S8_strain_temp.html"></iframe>
-                <iframe id="s_s9" src="../../plots/S9_strain_temp.html"></iframe>
-                <iframe id="s_s10" src="../../plots/S10_strain_temp.html"></iframe>
-                <iframe id="s_s11" src="../../plots/S11_strain_temp.html"></iframe>
-                <iframe id="s_s12" src="../../plots/S12_strain_temp.html"></iframe>
-                <iframe id="s_s13" src="../../plots/S13_strain_temp.html"></iframe>
-                <iframe id="s_s14" src="../../plots/S14_strain_temp.html"></iframe>
-                <iframe id="s_s15" src="../../plots/S15_strain_temp.html"></iframe>
-                <iframe id="s_s16" src="../../plots/S16_strain_temp.html"></iframe>
-                <iframe id="s_s17" src="../../plots/S17_strain_temp.html"></iframe>
-                <iframe id="s_s18" src="../../plots/S18_strain_temp.html"></iframe>
-                <iframe id="s_s19" src="../../plots/S19_strain_temp.html"></iframe>
-                <iframe id="s_s20" src="../../plots/S20_strain_temp.html"></iframe>
-                <iframe id="s_s21" src="../../plots/S21_strain_temp.html"></iframe>
-                <iframe id="s_s22" src="../../plots/S22_strain_temp.html"></iframe>
-                <iframe id="s_s23" src="../../plots/S23_strain_temp.html"></iframe>
-                <iframe id="s_s24" src="../../plots/S24_strain_temp.html"></iframe>
-                <iframe id="s_s25" src="../../plots/S25_strain_temp.html"></iframe>
-                <iframe id="s_s26" src="../../plots/S26_strain_temp.html"></iframe>
-                <iframe id="s_s27" src="../../plots/S27_strain_temp.html"></iframe>
-                <iframe id="s_s28" src="../../plots/S28_strain_temp.html"></iframe>
-                <iframe id="s_s29" src="../../plots/S29_strain_temp.html"></iframe>
+                <iframe id="s_s7" data-src="../../plots/S7_strain_temp.html" class="active"></iframe>
+                <iframe id="s_s8" data-src="../../plots/S8_strain_temp.html"></iframe>
+                <iframe id="s_s9" data-src="../../plots/S9_strain_temp.html"></iframe>
+                <iframe id="s_s10" data-src="../../plots/S10_strain_temp.html"></iframe>
+                <iframe id="s_s11" data-src="../../plots/S11_strain_temp.html"></iframe>
+                <iframe id="s_s12" data-src="../../plots/S12_strain_temp.html"></iframe>
+                <iframe id="s_s13" data-src="../../plots/S13_strain_temp.html"></iframe>
+                <iframe id="s_s14" data-src="../../plots/S14_strain_temp.html"></iframe>
+                <iframe id="s_s15" data-src="../../plots/S15_strain_temp.html"></iframe>
+                <iframe id="s_s16" data-src="../../plots/S16_strain_temp.html"></iframe>
+                <iframe id="s_s17" data-src="../../plots/S17_strain_temp.html"></iframe>
+                <iframe id="s_s18" data-src="../../plots/S18_strain_temp.html"></iframe>
+                <iframe id="s_s19" data-src="../../plots/S19_strain_temp.html"></iframe>
+                <iframe id="s_s20" data-src="../../plots/S20_strain_temp.html"></iframe>
+                <iframe id="s_s21" data-src="../../plots/S21_strain_temp.html"></iframe>
+                <iframe id="s_s22" data-src="../../plots/S22_strain_temp.html"></iframe>
+                <iframe id="s_s23" data-src="../../plots/S23_strain_temp.html"></iframe>
+                <iframe id="s_s24" data-src="../../plots/S24_strain_temp.html"></iframe>
+                <iframe id="s_s25" data-src="../../plots/S25_strain_temp.html"></iframe>
+                <iframe id="s_s26" data-src="../../plots/S26_strain_temp.html"></iframe>
+                <iframe id="s_s27" data-src="../../plots/S27_strain_temp.html"></iframe>
+                <iframe id="s_s28" data-src="../../plots/S28_strain_temp.html"></iframe>
+                <iframe id="s_s29" data-src="../../plots/S29_strain_temp.html"></iframe>
             </div>
         </div>
 
         <!-- TEMP TAB -->
         <div id="temperature" class="tab-content">
             <div class="sub-tab-container">
-                <button class="sub-tab-btn active" onclick="openSubTab('temperature', 't_arch')">Temp Arch</button>
-                <button class="sub-tab-btn" onclick="openSubTab('temperature', 't_col')">Temp Column</button>
+                <button class="sub-tab-btn active" onclick="openSubTab('temperature', 't_arch')">Arch</button>
+                <button class="sub-tab-btn" onclick="openSubTab('temperature', 't_col')">Column</button>
             </div>
             <div class="view-area">
-                <iframe id="t_arch" src="../../plots/temps_arch_plotly.html" class="active"></iframe>
-                <iframe id="t_col" src="../../plots/temps_col_plotly.html"></iframe>
+                <iframe id="t_arch" data-src="../../plots/temps_arch_plotly.html" class="active"></iframe>
+                <iframe id="t_col" data-src="../../plots/temps_col_plotly.html"></iframe>
             </div>
         </div>
 
@@ -380,7 +427,10 @@
         <div class="vhs-stripes bg-1"></div>
 
         <div class="footer">
-            System Report :: SHM_SA_reporter :: Rubint Technologies
+            SHM_system_report :: PRJ-16 :: <a href="https://www.rubint.sk" target="_blank"
+                style="color:#531a46; text-decoration:none; font-weight:bold;">
+                Rubint Technologies
+            </a>
         </div>
     </div>
 
@@ -390,8 +440,7 @@
             var tabs = document.getElementsByClassName("tab-content");
             for (var i = 0; i < tabs.length; i++) {
                 tabs[i].classList.remove("active");
-                // Also hide this via display:none logic just in case CSS flex interferes
-                tabs[i].style.display = "none";
+                // Removed display:none logic as we use off-screen positioning now
             }
 
             // Deactivate all main buttons
@@ -402,11 +451,28 @@
 
             // Show target tab
             var target = document.getElementById(tabId);
-            target.style.display = "flex";
-            setTimeout(() => target.classList.add("active"), 10); // logic fix
+            // target.style.display = "flex"; // No longer needed
+
+            // Activate immediately - layout is already there
+            target.classList.add("active");
 
             // Activate button
-            event.currentTarget.classList.add("active");
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add("active");
+            }
+
+            // --- SAFELY LOAD ACTIVE IFRAME ---
+            // Find the iframe marked 'active' inside this tab (default or previously selected)
+            var activeFrame = target.querySelector("iframe.active");
+            if (activeFrame) {
+                // Check if src needs to be loaded
+                if (!activeFrame.getAttribute('src') && activeFrame.getAttribute('data-src')) {
+                    // Slight usage tick just to be safe, but should be immediate
+                    setTimeout(() => {
+                        activeFrame.src = activeFrame.dataset.src;
+                    }, 50);
+                }
+            }
         }
 
         function openSubTab(parentId, frameId) {
@@ -430,13 +496,26 @@
             // Activate clicked button
             event.currentTarget.classList.add("active");
 
-            // Show target iframe
-            document.getElementById(frameId).classList.add("active");
+            // Show target iframe: Load src if not present
+            var targetFrame = document.getElementById(frameId);
+            targetFrame.classList.add("active");
+
+            if (!targetFrame.getAttribute('src') && targetFrame.getAttribute('data-src')) {
+                targetFrame.src = targetFrame.dataset.src;
+            }
         }
 
         // Init state: ensure display is correct on load
         document.addEventListener("DOMContentLoaded", function () {
-            document.getElementById("vibration").style.display = "flex";
+            // document.getElementById("vibration").style.display = "flex"; // Handled by CSS
+
+            // Auto-load initial active iframes
+            var activeFrames = document.querySelectorAll("iframe.active");
+            activeFrames.forEach(function (f) {
+                if (!f.getAttribute('src') && f.getAttribute('data-src')) {
+                    f.src = f.dataset.src;
+                }
+            });
         });
     </script>
 

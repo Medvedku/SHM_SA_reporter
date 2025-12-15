@@ -280,7 +280,7 @@ def temps_col_plotly(con, show=True, save=False, filename="temps_col_plotly.html
         #     xanchor="center",
         #     x=0.5,
         # ),
-        margin=dict(l=40, r=20, t=80, b=40),
+        margin=dict(l=60, r=60, t=90, b=50),
     )
     
 
@@ -410,7 +410,7 @@ def temps_arch_plotly(con, show=True, save=False, filename="temps_arch_plotly.ht
             showgrid=True,
             gridcolor="rgba(0,0,0,0.12)",
         ),
-        margin=dict(l=40, r=20, t=80, b=40),
+        margin=dict(l=60, r=60, t=90, b=50),
     )
 
     # --- Save if needed ---

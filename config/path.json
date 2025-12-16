@@ -4,6 +4,7 @@
     "report_dir": "reports/",
     "plots_dir": "plots/",
     "parquet_dir": "data/parquet/",
+    "duck_dir": "data/duckdb/",
     "font_dir": "font_Montserrat/",
     "static_dir": "static/"
 }

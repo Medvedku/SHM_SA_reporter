@@ -9,7 +9,7 @@ from plotly.subplots import make_subplots
 import os
 
 # Project paths from config
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 CONFIG_PATH = PROJECT_ROOT / "config" / "path.json"
 if CONFIG_PATH.exists():
     with open(CONFIG_PATH, "r") as fh:

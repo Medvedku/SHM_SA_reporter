@@ -16,9 +16,9 @@ IFRAME_HEIGHT = 750
 # --------------------------------------------------
 def get_week_dates(year, week):
     monday = date.fromisocalendar(year, week, 1)
-    saturday = date.fromisocalendar(year, week, 6)
+    sunday = date.fromisocalendar(year, week, 7)
     fmt = "%d. %B %Y"
-    return monday.strftime(fmt), saturday.strftime(fmt)
+    return monday.strftime(fmt), sunday.strftime(fmt)
 
 
 # --------------------------------------------------

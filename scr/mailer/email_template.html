@@ -51,19 +51,24 @@
                                 <b>PRJ-16 // WEEKLY_REPORT</b>
                             </p>
 
-                            <p style="font-size:14px; color:#001E2B; margin-top:20px; line-height: 1.5;">
+                            <p style="font-size:16px; color:#001E2B; margin-top:20px; line-height: 1.5;">
                                 <b>SUBJECT:</b> Structural Health Monitoring Report<br />
                                 <b>OBJECT:</b> Steel Arena<br />
                                 <b>LOCATION:</b> KOŠICE, Slovakia
+
                             </p>
 
                             <!-- Message -->
-                            <p style="font-size:16px; color:#001E2B; line-height:1.5;">
-                                Hi,<br /><br />
+                            <p style="font-size:14px; color:#001E2B; line-height:1.5;">
+                                Hello,<br /><br />
+                                The latest Structural Health Monitoring measurements are now available for
+                                review.<br /><br />
 
-                                The interpreted measured values for
-                                <b>ISO Week {iso_week}</b> ({date_from} to {date_to})
-                                can be downloaded via the link below.<br /><br />
+                                <b>ISO WEEK:</b> {year}W{week}<br />
+                                <b>START:</b> {date_from}<br />
+                                <b>END:</b> {date_to}<br /><br />
+
+                                Please access the report using the button below.<br /><br />
 
                                 Best regards,<br />
                                 the <b style="color:#531a46;">Rubint Technologies s.r.o.</b> team
@@ -73,7 +78,7 @@
                             <table role="presentation" align="center" style="margin: 40px auto;">
                                 <tr>
                                     <td>
-                                        <a href="https://rubint.sk/data/reports/prj16/2025W49_PRJ16_report.html"
+                                        <a href="https://rubint.sk/data/reports/prj16/{year}W{week}_PRJ16_report.html"
                                             target="_blank" style="text-decoration:none; display:block;">
                                             <div style="
                                                 width: 220px;
@@ -97,6 +102,19 @@
                                 </tr>
                             </table>
 
+                            <!-- View note -->
+                            <p style="
+                                font-size:12px;
+                                color:#531a46;
+                                text-align:center;
+                                margin-top:10px;
+                                font-family: 'Courier New', Courier, monospace;
+                                opacity:0.85;
+                            ">
+                                <u>Note: This report page is optimized for desktop viewing and may not display correctly
+                                    on
+                                    mobile devices.</u>
+                            </p>
 
                         </td>
                     </tr>

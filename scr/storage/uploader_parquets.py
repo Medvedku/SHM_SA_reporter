@@ -37,25 +37,25 @@ def object_exists(bucket: str, key: str) -> bool:
         raise  # real error
 
 
-# # === UPLOAD LOOP ===
-# for p in FILES:
-#     if not p.is_file() or p.suffix != ".parquet":
-#         continue
+# === UPLOAD LOOP ===
+for p in FILES:
+    if not p.is_file() or p.suffix != ".parquet":
+        continue
 
-#     name = p.name                  # 2025W49_sst_hub2.parquet
-#     folder = name[8:-8]            # sst_hub2 / fft_hub1 / accel_all
-#     key = f"{folder}/{name}"
+    name = p.name                  # 2025W49_sst_hub2.parquet
+    folder = name[8:-8]            # sst_hub2 / fft_hub1 / accel_all
+    key = f"{folder}/{name}"
 
-#     if object_exists(R2_BUCKET, key):
-#         print(f"✔ EXISTS → {key}")
-#         continue
+    if object_exists(R2_BUCKET, key):
+        print(f"✔ EXISTS → {key}")
+        continue
 
-#     print(f"⬆ UPLOADING → {key}")
+    print(f"⬆ UPLOADING → {key}")
 
-#     s3.upload_file(
-#         Filename=str(p),
-#         Bucket=R2_BUCKET,
-#         Key=key,
-#     )
+    s3.upload_file(
+        Filename=str(p),
+        Bucket=R2_BUCKET,
+        Key=key,
+    )
 
 print("✅ Parquet sync complete.")

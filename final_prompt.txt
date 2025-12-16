@@ -1,0 +1,31 @@
+We start with python3 scr/processing/run_parqueter.py
+It creates parquets
+
+then we call scr/plotting/run_plotter_v2.py
+It creates duckdb, it creates plots, it removes duckdb
+
+then we call scr/report_build/report_builder_v2.py
+it creates a report
+
+then we call scr/storage/uploader_parquets.py
+it uploads parquets to R2
+
+then we call scr/storage/uploader_report.py
+it uploads report to ftp
+
+then we call scr/mailer/mail_builder.py
+it creates an email
+
+then we call scr/mailer/emailer.py
+it sends an email
+
+then we call scr/storage/cleaner.py
+it cleans up the data
+
+
+i think in process is multiple times computed ISO week not only once keep it in mind
+
+please create one main script that will call all the above scripts i will schedule it or i will run it manually but i want to be sure that it will run without errors
+keep in mind that iso week is computed multiple times feel free to fix it, idk create a function that will compute it only once and use it in all scripts
+
+please create a README.md file that will explain how to run the script

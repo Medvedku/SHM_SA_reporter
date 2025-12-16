@@ -31,7 +31,15 @@ MONGO_URI = os.getenv("MONGODB_URI")
 client = pymongo.MongoClient(MONGO_URI)
 collection = client["prod"]["PRJ-16"]
 
-start_dt, end_dt, y, w = compute_week_boundaries()
+
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--year", type=int, default=None)
+parser.add_argument("--week", type=int, default=None)
+args = parser.parse_args()
+
+start_dt, end_dt, y, w = compute_week_boundaries(target_year=args.year, target_week=args.week)
 
 process_week(collection, start_dt, end_dt, y, w, base_dir=parquet_dir)
 

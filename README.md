@@ -1,75 +1,89 @@
 # SHM_SA_reporter
 
-Automated data extraction, conversion, analysis, and reporting pipeline.
+Automated data extraction, conversion, analysis, and reporting pipeline for SHM (Structural Health Monitoring).
 
-This project connects to a remote MongoDB database, downloads structured JSON
-data, converts it to Parquet format, stores processed files in an R2 bucket,
-generates analytical figures, creates a weekly report, and sends the report
-by email. Temporary files are cleaned up after each cycle.  
-The pipeline then sleeps until the next scheduled run.
+This project connects to a remote MongoDB, processes sensor data into Parquet/DuckDB, generates visualization plots, builds an HTML report, uploads artifacts to cloud/FTP, and emails stakeholders.
 
 ---
 
-## 🚀 Planned Workflow
+## 🚀 How to Run
 
-1. **Download data**
-   - Connect to MongoDB (hosted on Google Cloud)
-   - Fetch relevant JSON documents
-   - Store temporary JSON file locally
+The entire pipeline is orchestrated by a single script: **`scr/run_pipeline.py`**.
 
-2. **Convert JSON → Parquet**
-   - Use efficient columnar data format (Parquet)
-   - Enable faster analytics and reduced file size
+### 1. Manual Execution
 
-3. **Upload processed data to cloud**
-   - Upload Parquet files to an R2 bucket
-   - Handle versioning and cleanup
+By default, the script calculates the **previous ISO week** and runs the pipeline for that week.
 
-4. **Generate figures**
-   - Use Python (matplotlib / seaborn / plotly) to create visualizations
-   - Save plots locally for inclusion in the report
+```bash
+# Run for the previous week
+python3 scr/run_pipeline.py
+```
 
-5. **Create automated report**
-   - Assemble plots, statistics, and summaries into a PDF/HTML report
-   - Include relevant metrics and insights
+#### Options
 
-6. **Send report by email**
-   - Deliver generated report to specified recipients
-   - Support SMTP + secure authentication
+| Argument | Description | Example |
+| :--- | :--- | :--- |
+| `--year` | Force a specific year | `--year 2025` |
+| `--week` | Force a specific ISO week number | `--week 50` |
+| `--skip-cleaned` | Skip the final cleanup step (keep parquets/plots) | `--skip-cleaned` |
 
-7. **Cleanup**
-   - Remove temporary files (JSON, Parquet, images, reports)
-   - Ensure minimal disk usage
+**Example: Reprocessing a specific week:**
+```bash
+python3 scr/run_pipeline.py --year 2025 --week 48 --skip-cleaned
+```
 
-8. **Sleep until next scheduled cycle**
-   - Typically runs weekly
-   - All operations should be restart-safe and monitored
+### 2. Automatic Scheduling (Cron)
 
----
+To schedule the report to run automatically (e.g., every Monday at 02:00 AM).
 
-## 🔧 Technologies & Tools
-
-- **Python 3.x**
-- **MongoDB** (Google Cloud)
-- **Pandas / PyArrow** for JSON→Parquet
-- **Matplotlib / Plotly** for visualizations
-- **ReportLab / WeasyPrint** for report creation
-- **Cloudflare R2** (S3-compatible object storage)
-- **SMTP email** for notifications
-- **Cron / systemd timers** (for scheduling on deployment system)
+1. Open your crontab:
+   ```bash
+   crontab -e
+   ```
+2. Add the line below (adjust paths to your actual environment):
+   ```bash
+   # Run SHM Reporter every Monday at 2:00 AM
+   0 2 * * 1 /usr/bin/python3 /home/moshe/Documents/GitHub/SHM_SA_reporter/scr/run_pipeline.py >> /home/user/logs/shm_reporter.log 2>&1
+   ```
 
 ---
 
-## 🏗️ Deployment Targets
+## 🔄 Pipeline Workflow
 
-Planned deployment environments:
+1. **Parqueter** (`run_parqueter.py`)
+   - Fetches data from MongoDB for the calculated week.
+   - Converts to Parquet format in `data/parquet/`.
 
-- **Development:** ODROID-C2 (microSD), Linux environment  
-- **Production (future):** ODROID with SSD *or* VPS (Hetzner / DigitalOcean)
+2. **Plotter** (`run_plotter_v2.py`)
+   - Ingests Parquet files into a temporary DuckDB.
+   - Generates Plotly visualizations in `plots/`.
 
-Each weekly cycle should run reliably for years with proper monitoring,
-logging, and exception handling.
+3. **Report Builder** (`report_builder_v2.py`)
+   - Embeds plots into a self-contained HTML report.
+   - Saves result to `reports/`.
+
+4. **Upload Parquets** (`uploader_parquets.py`)
+   - Syncs new Parquet files to Cloudflare R2 bucket.
+
+5. **Upload Report** (`uploader_report.py`)
+   - Uploads the HTML report to the configured FTP server.
+
+6. **Emailer** (`mail_builder.py` + `emailer.py`)
+   - Generates an HTML email summary.
+   - Sends the email to recipients defined in `.env`.
+
+7. **Cleaner** (`cleaner.py`)
+   - Removes temporary files (Parquets, Plots, DuckDB) to save space.
+   - *Can be skipped with* `--skip-cleaned`.
 
 ---
 
-## 📦 Project Structure (to be expanded)
+## 🔧 Configuration
+
+Ensure your `.env` file is set up with:
+- MongoDB URI
+- R2 Storage Credentials
+- FTP Credentials
+- SMTP Email Settings
+
+(See `.env.example` if available)

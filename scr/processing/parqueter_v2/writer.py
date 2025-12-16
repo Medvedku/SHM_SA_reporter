@@ -111,6 +111,13 @@ def merge_week(
     wk = week_str(iso_year, iso_week)
     results: dict[str, Path] = {}
 
+    # Limit DuckDB memory usage to avoid OOM on constrained devices
+    try:
+        duckdb.sql("PRAGMA memory_limit='128MB'")
+        duckdb.sql("PRAGMA threads=1")
+    except Exception as e:
+        print(f"⚠️ Could not set DuckDB limits: {e}")
+
     for table_key in TABLE_KEYS:
         schema = _schema_for_table(table_key)
         chunk_dir = get_chunk_dir(base_dir, table_key, iso_year, iso_week)

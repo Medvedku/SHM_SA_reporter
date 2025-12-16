@@ -13,7 +13,7 @@ from .schemas import (
 from .helpers import safe_float, safe_list
 from .writer import append_chunk, merge_week
 
-CHUNK = 5000  # number of Mongo documents per flush
+CHUNK = 1000  # number of Mongo documents per flush (reduced for RAM optimization)
 
 
 def process_week_cursor(
@@ -188,7 +188,7 @@ def process_week(
 
     cursor = collection.find(
         {"time.datetime": {"$gte": start_iso, "$lt": end_iso}},
-        batch_size=5000,
+        batch_size=1000,
     )
 
     return process_week_cursor(cursor, iso_year, iso_week, base_dir=base_dir)

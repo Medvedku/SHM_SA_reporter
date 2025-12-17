@@ -1,7 +1,15 @@
 import argparse
 import os
+from datetime import date
 
-def build_mail(year, week, start_date, end_date):
+def get_week_dates(year, week):
+    # Match logic from report_builder_v2.py
+    monday = date.fromisocalendar(year, week, 1)
+    sunday = date.fromisocalendar(year, week, 7)
+    fmt = "%d. %B %Y"
+    return monday.strftime(fmt), sunday.strftime(fmt)
+
+def build_mail(year, week, start_date_arg, end_date_arg):
     """
     Reads the email template and generates a new email file with the provided details.
     """
@@ -24,24 +32,25 @@ def build_mail(year, week, start_date, end_date):
         print(f"Error reading template: {e}")
         return
 
+    # Recalculate dates to match Report format (DD. Month YYYY)
+    # This ignores the passed start/end args for the *content*, ensuring consistency with report
+    display_start, display_end = get_week_dates(int(year), int(week))
+
     # Replace placeholders
     # The template uses {year}, {week}, {date_from}, {date_to}
     try:
         filled_content = template_content.format(
             year=year,
             week=week,
-            date_from=start_date,
-            date_to=end_date
+            date_from=display_start,
+            date_to=display_end
         )
     except KeyError as e:
-        print(f"Error: Missing placeholder in template - {e}")
-        # Fallback to safe replace if format fails due to extra braces (like CSS)
-        # However, HTML often contains braces in CSS/JS.
-        # Let's use a safer replacement strategy if .format() is risky for HTML with CSS.
+        # Fallback if format fails due to extra braces (like CSS)
         filled_content = template_content.replace('{year}', str(year)) \
                                          .replace('{week}', str(week)) \
-                                         .replace('{date_from}', str(start_date)) \
-                                         .replace('{date_to}', str(end_date))
+                                         .replace('{date_from}', str(display_start)) \
+                                         .replace('{date_to}', str(display_end))
 
     # Write the output file
     try:

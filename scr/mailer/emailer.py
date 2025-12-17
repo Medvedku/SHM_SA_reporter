@@ -63,12 +63,8 @@ def send_email(year, week):
             smtp.send_message(msg)
         print(f"Email sent successfully to: {', '.join(RECIPIENTS)}")
         
-        # Cleanup
-        try:
-            html_path.unlink()
-            print(f"Deleted email file: {html_path}")
-        except Exception as e:
-            print(f"Error deleting file {html_path}: {e}")
+        # Cleanup is now handled by scr/storage/cleaner.py
+
 
     except Exception as e:
         print(f"Failed to send email: {e}")

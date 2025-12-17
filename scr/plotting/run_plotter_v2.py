@@ -8,11 +8,9 @@ def main():
     # The scripts to run are in scr/plotting/v2_html/
     current_dir = Path(__file__).parent
     deploy_dir = current_dir / "v2_html"
-
     scripts = [
         deploy_dir / "ducker.py",
-        deploy_dir / "plotter_v2.py",
-        deploy_dir / "ducker_cleaner.py"
+        deploy_dir / "plotter_v2.py"
     ]
 
     print("Starting sequential execution of plotter v2 scripts...")

@@ -2,6 +2,7 @@ import json
 import shutil
 import os
 from pathlib import Path
+import re
 
 def clean_directory(directory_path):
     """
@@ -59,6 +60,38 @@ def main():
             clean_directory(full_path)
         else:
             print(f"Warning: Key '{key}' not found in config")
+
+    # --- NEW: Specific file cleanup (DuckDB + Emails) ---
+    
+    # 1. Clean DuckDB
+    duck_dir_rel = config.get("duck_dir")
+    if duck_dir_rel:
+        duck_db_path = project_root / duck_dir_rel / "shm_report.duckdb"
+        if duck_db_path.exists():
+            try:
+                duck_db_path.unlink()
+                print(f"Removed DuckDB file: {duck_db_path}")
+            except Exception as e:
+                print(f"Failed to remove DuckDB: {e}")
+
+    # 2. Clean Email HTML files in scr/mailer/
+    # The emailer generates files like email_2025W50.html in scr/mailer/
+
+    mailer_dir = project_root / "scr/mailer"
+
+    if mailer_dir.exists():
+        pattern = re.compile(r"email_\d{4}W\d{2}\.html")
+
+        for email_file in mailer_dir.glob("email_*.html"):
+            # Skip templates or non-generated files
+            if not pattern.fullmatch(email_file.name):
+                continue
+
+            try:
+                email_file.unlink()
+                print(f"Removed email file: {email_file}")
+            except Exception as e:
+                print(f"Failed to remove email file {email_file}: {e}")
 
     print("Cleanup complete.")
 

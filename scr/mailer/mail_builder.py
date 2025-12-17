@@ -16,7 +16,7 @@ def build_mail(year, week, start_date_arg, end_date_arg):
     # Define paths
     base_dir = os.path.dirname(os.path.abspath(__file__))
     template_path = os.path.join(base_dir, 'email_template.html')
-    output_filename = f"email_{year}W{week}.html"
+    output_filename = f"email_{year}W{int(week):02d}.html"
     output_path = os.path.join(base_dir, output_filename)
 
     # Check if template exists

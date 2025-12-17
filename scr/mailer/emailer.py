@@ -27,7 +27,7 @@ def send_email(year, week):
     # Construct file path
     # Assuming this script is in scr/mailer/ where email files are also generated
     base_dir = Path(__file__).parent.absolute()
-    html_filename = f"email_{year}W{week}.html"
+    html_filename = f"email_{year}W{int(week):02d}.html"
     html_path = base_dir / html_filename
 
     if not html_path.exists():

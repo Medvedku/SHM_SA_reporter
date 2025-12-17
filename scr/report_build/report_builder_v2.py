@@ -272,7 +272,7 @@ def main():
     print("🔁 Updating JS...")
     content = update_script(content)
 
-    out = out_dir / f"{args.year}W{args.week}_PRJ16_report.html"
+    out = out_dir / f"{args.year}W{args.week:02d}_PRJ16_report.html"
     out.write_text(content, encoding="utf-8")
 
     print(f"✅ Done: {out}")

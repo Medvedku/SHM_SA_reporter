@@ -87,3 +87,9 @@ Ensure your `.env` file is set up with:
 - SMTP Email Settings
 
 (See `.env.example` if available)
+
+---
+
+## Requirements
+This should be enough:\
+`pip install pymongo pyarrow duckdb numpy pandas plotly scipy boto3 python-dotenv`

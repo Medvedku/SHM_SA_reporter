@@ -1,8 +1,13 @@
 import os
 import json
+import logging
 from pathlib import Path
 from ftplib import FTP
 from dotenv import load_dotenv
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
@@ -29,9 +34,9 @@ ftp = FTP(FTP_HOST, timeout=15)
 ftp.login(FTP_USER, FTP_PASS)
 ftp.cwd(FTP_BASE_DIR)
 
-print(f"✔ Connected to FTP: {FTP_HOST}")
-print(f"📂 Remote dir: {FTP_BASE_DIR}")
-print(f"📁 Local reports: {REPORTS_DIR}\n")
+logger.info(f"Connected to FTP: {FTP_HOST}")
+logger.info(f"Remote dir: {FTP_BASE_DIR}")
+logger.info(f"Local reports: {REPORTS_DIR}")
 
 # --- get remote file list ---
 remote_files = set()
@@ -42,14 +47,13 @@ local_files = sorted(p for p in REPORTS_DIR.iterdir() if p.is_file())
 
 for lf in local_files:
     if lf.name in remote_files:
-        print(f"✔ UP-TO-DATE: {lf.name}")
+        logger.debug(f"UP-TO-DATE: {lf.name}")
         continue
 
-    print(f"⬆ UPLOADING: {lf.name}")
+    logger.info(f"UPLOADING: {lf.name}")
 
     with open(lf, "rb") as f:
         ftp.storbinary(f"STOR {lf.name}", f)
 
-print("\n✅ Report sync complete")
+logger.info("Report sync complete")
 ftp.quit()
-

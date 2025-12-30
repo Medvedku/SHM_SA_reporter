@@ -2,8 +2,13 @@ import argparse
 from email.message import EmailMessage
 import smtplib
 import os
+import logging
 from dotenv import load_dotenv
 from pathlib import Path
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
 
 # Load .env (SMTP_* and REPORT_RECIPIENTS)
 load_dotenv()
@@ -18,7 +23,7 @@ RECIPIENTS = [r.strip() for r in os.getenv("REPORT_RECIPIENTS_PRJ16", "").split(
 
 def send_email(year, week):
     if not RECIPIENTS:
-        print("Error: REPORT_RECIPIENTS is empty or not set in .env")
+        logger.error("REPORT_RECIPIENTS is empty or not set in .env")
         return
 
     # Construct file path
@@ -28,14 +33,14 @@ def send_email(year, week):
     html_path = base_dir / html_filename
 
     if not html_path.exists():
-        print(f"Error: HTML file not found: {html_path}")
+        logger.error(f"HTML file not found: {html_path}")
         return
 
     # Load HTML from file
     try:
         html_body = html_path.read_text(encoding="utf-8")
     except Exception as e:
-        print(f"Error reading HTML file: {e}")
+        logger.error(f"Error reading HTML file: {e}")
         return
 
     msg = EmailMessage()
@@ -58,12 +63,12 @@ def send_email(year, week):
         with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT) as smtp:
             smtp.login(SMTP_USER, SMTP_PASS)
             smtp.send_message(msg)
-        print(f"Email sent successfully to: {', '.join(RECIPIENTS)}")
+        logger.info(f"Email sent successfully to: {', '.join(RECIPIENTS)}")
 
         # Cleanup is now handled by src/storage/cleaner.py
 
     except Exception as e:
-        print(f"Failed to send email: {e}")
+        logger.error(f"Failed to send email: {e}")
 
 
 def main():

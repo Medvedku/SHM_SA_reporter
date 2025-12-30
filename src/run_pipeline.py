@@ -2,8 +2,13 @@ import subprocess
 import sys
 import argparse
 import os
+import logging
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
 
 # --- Configuration ---
 # 1. parqueter
@@ -51,14 +56,14 @@ def get_iso_week_boundaries(year=None, week=None):
 
 
 def run_command(cmd, description):
-    print(f"\n🚀 Starting: {description}")
-    print(f"   Command: {' '.join(cmd)}")
+    logger.info(f"Starting: {description}")
+    logger.debug(f"Command: {' '.join(cmd)}")
     try:
         subprocess.run(cmd, check=True)
-        print(f"✅ Finished: {description}")
+        logger.info(f"Finished: {description}")
     except subprocess.CalledProcessError as e:
-        print(f"\n❌ Error in step: {description}")
-        print(f"   Exit code: {e.returncode}")
+        logger.error(f"Error in step: {description}")
+        logger.error(f"Exit code: {e.returncode}")
         sys.exit(e.returncode)
 
 
@@ -72,11 +77,11 @@ def main():
     # 1. Determine Timeframe
     year, week, start_date, end_date = get_iso_week_boundaries(args.year, args.week)
 
-    print("=" * 60)
-    print(f"SHM REPORTER PIPELINE")
-    print(f"Target: Year {year}, Week {week}")
-    print(f"Range:  {start_date} -> {end_date}")
-    print("=" * 60)
+    logger.info("=" * 60)
+    logger.info("SHM REPORTER PIPELINE")
+    logger.info(f"Target: Year {year}, Week {week}")
+    logger.info(f"Range:  {start_date} -> {end_date}")
+    logger.info("=" * 60)
 
     base_dir = Path(__file__).parent.resolve()
     python_exe = sys.executable
@@ -138,9 +143,9 @@ def main():
     if not args.skip_cleaned:
         run_command([python_exe, str(script_cleaner)], "Cleanup")
     else:
-        print("\n⚠ Skipping cleanup as requested.")
+        logger.warning("Skipping cleanup as requested.")
 
-    print("\n🎉 PIPELINE COMPLETED SUCCESSFULLY 🎉")
+    logger.info("PIPELINE COMPLETED SUCCESSFULLY")
 
 
 if __name__ == "__main__":

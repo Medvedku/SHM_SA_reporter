@@ -1,17 +1,22 @@
 import boto3
 import os
+import logging
 from pathlib import Path
 from dotenv import load_dotenv
 import json
 from botocore.exceptions import ClientError
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
 # === R2 CONFIG ===
 R2_ACCESS_KEY = os.getenv("R2_ACCESS_KEY_ID")
 R2_SECRET_KEY = os.getenv("R2_SECRET_ACCESS_KEY")
-R2_ENDPOINT   = os.getenv("R2_ENDPOINT_URL")
-R2_BUCKET     = os.getenv("R2_BUCKET")
+R2_ENDPOINT = os.getenv("R2_ENDPOINT_URL")
+R2_BUCKET = os.getenv("R2_BUCKET")
 
 # === S3 CLIENT ===
 s3 = boto3.client(
@@ -42,15 +47,15 @@ for p in FILES:
     if not p.is_file() or p.suffix != ".parquet":
         continue
 
-    name = p.name                  # 2025W49_sst_hub2.parquet
-    folder = name[8:-8]            # sst_hub2 / fft_hub1 / accel_all
+    name = p.name  # 2025W49_sst_hub2.parquet
+    folder = name[8:-8]  # sst_hub2 / fft_hub1 / accel_all
     key = f"{folder}/{name}"
 
     if object_exists(R2_BUCKET, key):
-        print(f"✔ EXISTS → {key}")
+        logger.debug(f"EXISTS → {key}")
         continue
 
-    print(f"⬆ UPLOADING → {key}")
+    logger.info(f"UPLOADING → {key}")
 
     s3.upload_file(
         Filename=str(p),
@@ -58,4 +63,4 @@ for p in FILES:
         Key=key,
     )
 
-print("✅ Parquet sync complete.")
+logger.info("Parquet sync complete.")

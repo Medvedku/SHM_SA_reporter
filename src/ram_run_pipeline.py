@@ -1,8 +1,13 @@
 import subprocess
 import sys
 import time
+import logging
 import psutil
 from pathlib import Path
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
 
 
 def get_tree_memory_usage(pid):
@@ -39,16 +44,16 @@ def main():
     target_script = current_dir / "run_pipeline.py"
 
     if not target_script.exists():
-        print(f"Error: Could not find {target_script}")
+        logger.error(f"Could not find {target_script}")
         return
 
     # Prepare command: python3 src/run_pipeline.py [args...]
     cmd = [sys.executable, str(target_script)] + sys.argv[1:]
 
-    print("=" * 60)
-    print(f"🧠 RAM MONITOR WRAPPER")
-    print(f"🚀 Launching: {' '.join(cmd)}")
-    print("=" * 60)
+    logger.info("=" * 60)
+    logger.info("RAM MONITOR WRAPPER")
+    logger.info(f"Launching: {' '.join(cmd)}")
+    logger.info("=" * 60)
 
     start_time = time.time()
 
@@ -56,7 +61,7 @@ def main():
     try:
         process = subprocess.Popen(cmd)
     except Exception as e:
-        print(f"Failed to start process: {e}")
+        logger.error(f"Failed to start process: {e}")
         return
 
     peak_ram = 0
@@ -77,13 +82,13 @@ def main():
             time.sleep(0.5)
 
     except KeyboardInterrupt:
-        print("\n\n⚠ Interrupted by user. Terminating pipeline...")
+        logger.warning("Interrupted by user. Terminating pipeline...")
         process.terminate()
         try:
             process.wait(timeout=5)
         except subprocess.TimeoutExpired:
             process.kill()
-        print("Pipeline terminated.")
+        logger.info("Pipeline terminated.")
         return
 
     # Final logic
@@ -95,16 +100,16 @@ def main():
     sys.stdout.write("\r" + " " * 80 + "\r")
     sys.stdout.flush()
 
-    print("=" * 60)
+    logger.info("=" * 60)
     if return_code == 0:
-        print("✅ Pipeline FINISHED successfully.")
+        logger.info("Pipeline FINISHED successfully.")
     else:
-        print(f"❌ Pipeline FAILED with exit code {return_code}.")
+        logger.error(f"Pipeline FAILED with exit code {return_code}.")
 
-    print("-" * 60)
-    print(f"⏱  Total Duration : {duration:.2f} seconds")
-    print(f"🧠 Peak RAM Usage : {format_bytes(peak_ram)}")
-    print("=" * 60)
+    logger.info("-" * 60)
+    logger.info(f"Total Duration : {duration:.2f} seconds")
+    logger.info(f"Peak RAM Usage : {format_bytes(peak_ram)}")
+    logger.info("=" * 60)
 
     sys.exit(return_code)
 

@@ -1,8 +1,16 @@
 import json
 import shutil
 import os
+import logging
 from pathlib import Path
 import re
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 
 def clean_directory(directory_path):
@@ -12,10 +20,10 @@ def clean_directory(directory_path):
     """
     directory = Path(directory_path)
     if not directory.exists():
-        print(f"Directory not found, skipping: {directory}")
+        logger.warning(f"Directory not found, skipping: {directory}")
         return
 
-    print(f"Cleaning: {directory}")
+    logger.info(f"Cleaning: {directory}")
     for item in directory.iterdir():
         try:
             if item.name == ".gitkeep":
@@ -25,7 +33,7 @@ def clean_directory(directory_path):
             elif item.is_dir():
                 shutil.rmtree(item)
         except Exception as e:
-            print(f"Failed to delete {item}. Reason: {e}")
+            logger.error(f"Failed to delete {item}. Reason: {e}")
 
 
 def main():
@@ -40,16 +48,14 @@ def main():
     project_root = script_path.parents[2]
 
     config_path = project_root / "config/path.json"
-
+    
     if not config_path.exists():
-        print(f"Config file not found at {config_path}")
-        return
-
-    try:
-        with open(config_path, "r") as f:
+        logger.error(f"Config file not found at {config_path}")
+        return    try:
+        with open(config_path, 'r') as f:
             config = json.load(f)
     except Exception as e:
-        print(f"Error reading config: {e}")
+        logger.error(f"Error reading config: {e}")
         return
 
     # Directories to clean as requested
@@ -61,7 +67,7 @@ def main():
             full_path = project_root / dir_rel_path
             clean_directory(full_path)
         else:
-            print(f"Warning: Key '{key}' not found in config")
+            logger.warning(f"Key '{key}' not found in config")
 
     # --- NEW: Specific file cleanup (DuckDB + Emails) ---
 
@@ -72,9 +78,9 @@ def main():
         if duck_db_path.exists():
             try:
                 duck_db_path.unlink()
-                print(f"Removed DuckDB file: {duck_db_path}")
+                logger.info(f"Removed DuckDB file: {duck_db_path}")
             except Exception as e:
-                print(f"Failed to remove DuckDB: {e}")
+                logger.error(f"Failed to remove DuckDB: {e}")
 
     # 2. Clean Email HTML files in src/mailer/
     # The emailer generates files like email_2025W50.html in src/mailer/
@@ -91,11 +97,11 @@ def main():
 
             try:
                 email_file.unlink()
-                print(f"Removed email file: {email_file}")
+                logger.info(f"Removed email file: {email_file}")
             except Exception as e:
-                print(f"Failed to remove email file {email_file}: {e}")
+                logger.error(f"Failed to remove email file {email_file}: {e}"): {e}")
 
-    print("Cleanup complete.")
+    logger.info("Cleanup complete.")
 
 
 if __name__ == "__main__":

@@ -19,6 +19,7 @@ else:
 
 PLOTS_DIR = PROJECT_ROOT / _cfg.get("plots_dir", "plots")
 
+
 def _ensure_plot_path():
     try:
         PLOTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -26,7 +27,7 @@ def _ensure_plot_path():
         pass
 
 
-# # Assuming this file lives in: <project_root>/scr/plotting/plot_functions.py
+# # Assuming this file lives in: <project_root>/src/plotting/plot_functions.py
 # PROJECT_ROOT = Path(__file__).resolve().parents[2]
 # CONFIG_PATH = PROJECT_ROOT / "config" / "path.json"
 
@@ -41,52 +42,50 @@ def _ensure_plot_path():
 
 strain_temp_map = {
     "sst_hub1": {"S27": "T4", "S28": "T5", "S29": "T6"},
-    "sst_hub2": {s: "T1" for s in ["S7","S8","S9","S10","S11","S12","S13","S14"]},
-    "sst_hub3": {s: "T2" for s in ["S15","S16","S17","S18"]},
-    "sst_hub4": {s: "T3" for s in ["S19","S20","S21","S22","S23","S24","S25","S26"]},
+    "sst_hub2": {s: "T1" for s in ["S7", "S8", "S9", "S10", "S11", "S12", "S13", "S14"]},
+    "sst_hub3": {s: "T2" for s in ["S15", "S16", "S17", "S18"]},
+    "sst_hub4": {s: "T3" for s in ["S19", "S20", "S21", "S22", "S23", "S24", "S25", "S26"]},
 }
 
 sensor_color_mapping = {
     # ==== Temperature sensors ====
-    'T1': '#bf4054ff',
-    'T2': '#862d3bff',
-    'T3': '#d27987ff',
-    'T4': '#d29779ff',
-    'T5': '#bf6a40ff',
-    'T6': '#864a2dff',
-
+    "T1": "#bf4054ff",
+    "T2": "#862d3bff",
+    "T3": "#d27987ff",
+    "T4": "#d29779ff",
+    "T5": "#bf6a40ff",
+    "T6": "#864a2dff",
     # ==== Accelerometers ====
-    'A30': '#e6196eff',
-    'A31': '#19c3e6ff',
-    'A32': '#e65d19ff',
-    'A33': '#16cc62ff',
-    'A34': '#196ee6ff',
-    'A35': '#e6b219ff',
-
+    "A30": "#e6196eff",
+    "A31": "#19c3e6ff",
+    "A32": "#e65d19ff",
+    "A33": "#16cc62ff",
+    "A34": "#196ee6ff",
+    "A35": "#e6b219ff",
     # ==== Strain sensors ====
-    'S7':  '#2d8652ff',
-    'S8':  '#b3e6c8ff',
-    'S9':  '#79d29eff',
-    'S10': '#40bf75ff',
-    'S11': '#b3c8e6ff',
-    'S12': '#799ed2ff',
-    'S13': '#2d5286ff',
-    'S14': '#4075bfff',
-    'S15': '#e6d9b3ff',
-    'S16': '#866f2dff',
-    'S17': '#bf9f40ff',
-    'S18': '#d2bc79ff',
-    'S19': '#a440bfff',
-    'S20': '#bf79d2ff',
-    'S21': '#732d86ff',
-    'S22': '#b3dce6ff',
-    'S23': '#79c3d2ff',
-    'S24': '#dbb3e6ff',
-    'S25': '#2d7686ff',
-    'S26': '#40a9bfff',
-    'S27': '#79d2b8ff',
-    'S28': '#40bf99ff',
-    'S29': '#2d866bff'
+    "S7": "#2d8652ff",
+    "S8": "#b3e6c8ff",
+    "S9": "#79d29eff",
+    "S10": "#40bf75ff",
+    "S11": "#b3c8e6ff",
+    "S12": "#799ed2ff",
+    "S13": "#2d5286ff",
+    "S14": "#4075bfff",
+    "S15": "#e6d9b3ff",
+    "S16": "#866f2dff",
+    "S17": "#bf9f40ff",
+    "S18": "#d2bc79ff",
+    "S19": "#a440bfff",
+    "S20": "#bf79d2ff",
+    "S21": "#732d86ff",
+    "S22": "#b3dce6ff",
+    "S23": "#79c3d2ff",
+    "S24": "#dbb3e6ff",
+    "S25": "#2d7686ff",
+    "S26": "#40a9bfff",
+    "S27": "#79d2b8ff",
+    "S28": "#40bf99ff",
+    "S29": "#2d866bff",
 }
 
 sensor_legend_mapping = {
@@ -94,16 +93,14 @@ sensor_legend_mapping = {
     "T1": "T1 (North)",
     "T2": "T2 (Middle)",
     "T3": "T3 (South)",
-
     # ==== Temperatures (Column) ====
     "T4": "T4 (Bottom)",
     "T5": "T5 (Middle)",
     "T6": "T6 (Top)",
-
     # ==== Strain sensors ====
-    "S7":  "Arch, Section 1 – Top",
-    "S8":  "Arch, Section 1 – Diagonal",
-    "S9":  "Arch, Section 1 – Bottom Right",
+    "S7": "Arch, Section 1 – Top",
+    "S8": "Arch, Section 1 – Diagonal",
+    "S9": "Arch, Section 1 – Bottom Right",
     "S10": "Arch, Section 1 – Bottom Left",
     "S11": "Arch, Section 2 – Diagonal",
     "S12": "Arch, Section 2 – Bottom Right",
@@ -124,14 +121,13 @@ sensor_legend_mapping = {
     "S27": "Column – Bottom",
     "S28": "Column – Middle",
     "S29": "Column – Top",
-
     # ==== Accelerometers ====
-    'A30': 'Arch (North)',
-    'A31': 'Arch (Middle)',
-    'A32': 'Arch (South)',
-    'A33': 'Column (Bottom)',
-    'A34': 'Column (Middle)',
-    'A35': 'Column (Top)'
+    "A30": "Arch (North)",
+    "A31": "Arch (Middle)",
+    "A32": "Arch (South)",
+    "A33": "Column (Bottom)",
+    "A34": "Column (Middle)",
+    "A35": "Column (Top)",
 }
 
 
@@ -143,8 +139,8 @@ pio.templates["shm"] = pio.templates["ggplot2"]
 #     color="#222222",
 # )
 
-font_style1 = 'Courier New, monospace'
-font_style2 = 'Montserrat, sans-serif'
+font_style1 = "Courier New, monospace"
+font_style2 = "Montserrat, sans-serif"
 
 pio.templates["shm"].layout.font = dict(
     family=font_style1,
@@ -193,7 +189,7 @@ def fix_color(c):
     if isinstance(c, str) and c.startswith("#"):
         # If hex has alpha (8-digit), strip to 6-digit
         if len(c) >= 7:
-            return c[:7]    # #RRGGBB
+            return c[:7]  # #RRGGBB
         else:
             return "#000000"
 
@@ -232,7 +228,6 @@ def temps_col_plotly(con, show=True, save=False, filename="temps_col_plotly.html
         ORDER BY dt_XYmin
     """
 
-
     df = con.execute(query).df()
 
     if df.empty:
@@ -255,7 +250,7 @@ def temps_col_plotly(con, show=True, save=False, filename="temps_col_plotly.html
                 mode="lines",
                 name=sensor_legend_mapping.get(s, s),
                 line=dict(width=2, color=color),
-                hovertemplate="%{x|%H:%M}<br>%{y:.2f} °C<extra></extra>"
+                hovertemplate="%{x|%H:%M}<br>%{y:.2f} °C<extra></extra>",
             )
         )
 
@@ -282,7 +277,6 @@ def temps_col_plotly(con, show=True, save=False, filename="temps_col_plotly.html
         # ),
         margin=dict(l=60, r=60, t=90, b=50),
     )
-    
 
     # --- Save if needed ---
     if save:
@@ -340,7 +334,6 @@ def temps_arch_plotly(con, show=True, save=False, filename="temps_arch_plotly.ht
             GROUP BY dt_XYmin
             ORDER BY dt_XYmin
         """,
-
         "T2": f"""
             SELECT
                 TIMESTAMP '1970-01-01'
@@ -352,7 +345,6 @@ def temps_arch_plotly(con, show=True, save=False, filename="temps_arch_plotly.ht
             GROUP BY dt_XYmin
             ORDER BY dt_XYmin
         """,
-
         "T3": f"""
             SELECT
                 TIMESTAMP '1970-01-01'
@@ -365,7 +357,6 @@ def temps_arch_plotly(con, show=True, save=False, filename="temps_arch_plotly.ht
             ORDER BY dt_XYmin
         """,
     }
-
 
     fig = go.Figure()
     has_data = False
@@ -388,7 +379,7 @@ def temps_arch_plotly(con, show=True, save=False, filename="temps_arch_plotly.ht
                 mode="lines",
                 name=sensor_legend_mapping.get(sensor, sensor),
                 line=dict(width=2, color=color),
-                hovertemplate="%{x|%H:%M}<br>%{y:.2f} °C<extra></extra>"
+                hovertemplate="%{x|%H:%M}<br>%{y:.2f} °C<extra></extra>",
             )
         )
 
@@ -466,9 +457,7 @@ def strain_temp_plotly(
     # 2) Resolve time window (weekly DB → auto)
     # --------------------------------------------------
     if end_dt is None:
-        end_dt = con.execute(
-            f"SELECT MAX(datetime) FROM {hub}"
-        ).fetchone()[0]
+        end_dt = con.execute(f"SELECT MAX(datetime) FROM {hub}").fetchone()[0]
 
     if end_dt is None:
         print(f"No data for {sensor_id}")
@@ -516,10 +505,10 @@ def strain_temp_plotly(
     # Colors & labels
     # --------------------------------------------------
     strain_color = fix_color(sensor_color_mapping.get(sensor_id, "#000000"))
-    temp_color   = fix_color(sensor_color_mapping.get(temp_id, "#444444"))
+    temp_color = fix_color(sensor_color_mapping.get(temp_id, "#444444"))
 
     strain_label = sensor_legend_mapping.get(sensor_id, sensor_id)
-    temp_label   = sensor_legend_mapping.get(temp_id, temp_id)
+    temp_label = sensor_legend_mapping.get(temp_id, temp_id)
 
     # --------------------------------------------------
     # Plotly figure
@@ -535,7 +524,7 @@ def strain_temp_plotly(
             name=sensor_id,
             line=dict(color=strain_color, width=2),
             yaxis="y",
-            hovertemplate="%{x|%H:%M}<br>%{y:.3f} mm/m<extra></extra>"
+            hovertemplate="%{x|%H:%M}<br>%{y:.3f} mm/m<extra></extra>",
         )
     )
 
@@ -556,9 +545,7 @@ def strain_temp_plotly(
     # Layout
     # --------------------------------------------------
     fig.update_layout(
-        title=f"{strain_label}<br>"
-              f"<sup>Strain {sensor_id} & Temp {temp_id} "
-              f"({bin_time} min median)</sup>",
+        title=f"{strain_label}<br><sup>Strain {sensor_id} & Temp {temp_id} ({bin_time} min median)</sup>",
         # template="plotly_white",
         hovermode="x unified",
         xaxis=dict(
@@ -691,7 +678,6 @@ def fft_with_KDE_plotly(
     color = fix_color(raw_color)
     label = sensor_legend_mapping.get(sensor_id, sensor_id)
 
-
     # --------------------------------------------------
     # Plotly figure
     # --------------------------------------------------
@@ -703,7 +689,7 @@ def fft_with_KDE_plotly(
             x=flat["freq"],
             y=flat["amp"],
             mode="markers",
-            name='FFT',
+            name="FFT",
             marker=dict(
                 size=6,
                 color=color,
@@ -740,14 +726,11 @@ def fft_with_KDE_plotly(
         )
     )
 
-
     # --------------------------------------------------
     # Layout
     # --------------------------------------------------
     fig.update_layout(
-        title=f"{sensor_id} – FFT + KDE<br>"
-              f"<sup>{label} – peaks ≥ {threshold}, "
-              f"(last 7 days)</sup>",
+        title=f"{sensor_id} – FFT + KDE<br><sup>{label} – peaks ≥ {threshold}, (last 7 days)</sup>",
         xaxis=dict(title="Frequency [Hz]"),
         yaxis=dict(title="Amplitude"),
         yaxis2=dict(
@@ -800,9 +783,7 @@ def accel_v_daily_grid_plotly(
     # Resolve time window
     # --------------------------------------------------
     if end_dt is None:
-        end_dt = con.execute(
-            "SELECT MAX(datetime) FROM accel_all"
-        ).fetchone()[0]
+        end_dt = con.execute("SELECT MAX(datetime) FROM accel_all").fetchone()[0]
 
     if end_dt is None:
         print("No acceleration data found.")
@@ -816,7 +797,7 @@ def accel_v_daily_grid_plotly(
         start_dt = pd.to_datetime(start_dt)
 
     start_day = start_dt.normalize()
-    end_day   = end_dt.normalize()
+    end_day = end_dt.normalize()
 
     total_days = (end_day - start_day).days + 1
     if total_days <= 0:
@@ -887,7 +868,6 @@ def accel_v_daily_grid_plotly(
     color = fix_color(raw_color)
     label = sensor_legend_mapping.get(sensor_id, sensor_id)
 
-
     def hex_to_rgba(hex_color, alpha):
         h = hex_color.lstrip("#")
         r = int(h[0:2], 16)
@@ -911,10 +891,7 @@ def accel_v_daily_grid_plotly(
         if day_df.empty:
             continue
 
-        t_hours = (
-            (day_df.index - day_df.index.normalize())
-            / pd.Timedelta(hours=1)
-        )
+        t_hours = (day_df.index - day_df.index.normalize()) / pd.Timedelta(hours=1)
 
         # min baseline
         fig.add_trace(
@@ -993,8 +970,7 @@ def accel_v_daily_grid_plotly(
     )
 
     fig.update_layout(
-        title=f"{sensor_id} – Daily Resultant Acceleration<br>"
-              f"<sup>{label} (last 7 days)",
+        title=f"{sensor_id} – Daily Resultant Acceleration<br><sup>{label} (last 7 days)",
         height=100 + 90 * total_days,
         margin=dict(l=60, r=60, t=90, b=50),
         showlegend=False,
@@ -1015,6 +991,3 @@ def accel_v_daily_grid_plotly(
         fig.show()
 
     return None
-
-
-

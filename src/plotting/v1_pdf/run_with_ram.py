@@ -6,13 +6,14 @@ its memory usage (and descendants when possible). It prints updates
 and writes a summary JSON with peak RSS in KB.
 
 Usage:
-  python3 scr/plotting/run_with_ram.py --end-date 2025-11-23 --yes
+  python3 src/plotting/run_with_ram.py --end-date 2025-11-23 --yes
 
 Options:
   --interval N   Sampling interval in seconds (default 1)
   --log PATH     Path to write JSON summary (default: ./ram_usage_<ts>.json)
   --python PATH  Python executable to run the runner (default: this interpreter)
 """
+
 from __future__ import annotations
 
 import argparse
@@ -141,11 +142,11 @@ def main() -> None:
             outpath = Path.cwd() / f"ram_usage_{stamp}.json"
 
         outpath.write_text(json.dumps(summary, indent=2))
-        
+
         if args.verbose:
             print(f"Wrote summary to: {outpath}")
             print(f"Peak RSS: {peak_kb} KB. Exit code: {ret}")
-        
+
         sys.exit(ret)
 
     except KeyboardInterrupt:

@@ -1,6 +1,7 @@
 # run_parqueter.py
 
 import parqueter_v2.processor as p
+
 print("USING processor:", p.__file__)
 
 
@@ -12,7 +13,6 @@ import pymongo
 
 from parqueter_v2.processor import process_week
 from parqueter_v2.helpers import compute_week_boundaries
-
 
 
 def get_ram_mb():
@@ -38,31 +38,31 @@ def main():
 
     from pathlib import Path
     import json
-    
+
     # Robustly find config/path.json relative to this script
-    # script is in scr/processing/ -> root is ../../
+    # script is in src/processing/ -> root is ../../
     script_dir = Path(__file__).resolve().parent
     repo_root = script_dir.parent.parent
     config_path = repo_root / "config" / "path.json"
-    
-    parquet_dir = "parquet_output" # Fallback
+
+    parquet_dir = "parquet_output"  # Fallback
     if config_path.exists():
         with open(config_path, "r") as f:
             config = json.load(f)
         parquet_dir = config.get("parquet_dir", "data/parquet/")
-        # Ensure it's absolute or relative to CWD correctly? 
+        # Ensure it's absolute or relative to CWD correctly?
         # config paths are usually relative to repo root.
         # If running from script dir, we might need to adjust.
         # But usually data/ is in root.
         # So we should probably prepend repo_root if it's relative?
         # The writer uses it as base_dir.
-        # If I pass "data/parquet/", and run from scr/processing/, it will try scr/processing/data/parquet/
+        # If I pass "data/parquet/", and run from src/processing/, it will try src/processing/data/parquet/
         # UNLESS the user runs from root.
-        
+
         # To be safe, let's make it absolute based on repo_root
         parquet_path = Path(parquet_dir)
         if not parquet_path.is_absolute():
-             parquet_path = repo_root / parquet_path
+            parquet_path = repo_root / parquet_path
         parquet_dir = str(parquet_path)
 
     process_week(collection, start_dt, end_dt, y, w, base_dir=parquet_dir)

@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import re
 
+
 def clean_directory(directory_path):
     """
     Removes all files and subdirectories from the given directory path.
@@ -18,7 +19,7 @@ def clean_directory(directory_path):
     for item in directory.iterdir():
         try:
             if item.name == ".gitkeep":
-                 continue
+                continue
             if item.is_file() or item.is_symlink():
                 item.unlink()
             elif item.is_dir():
@@ -26,25 +27,26 @@ def clean_directory(directory_path):
         except Exception as e:
             print(f"Failed to delete {item}. Reason: {e}")
 
+
 def main():
     # Resolve the project root relative to this script
-    # Script is in scr/storage/cleaner.py 
-    # path: .../SHM_SA_reporter/scr/storage/cleaner.py
+    # Script is in src/storage/cleaner.py
+    # path: .../SHM_SA_reporter/src/storage/cleaner.py
     # parents[0] = storage
-    # parents[1] = scr
+    # parents[1] = src
     # parents[2] = SHM_SA_reporter (Root)
-    
+
     script_path = Path(__file__).resolve()
     project_root = script_path.parents[2]
-    
+
     config_path = project_root / "config/path.json"
-    
+
     if not config_path.exists():
         print(f"Config file not found at {config_path}")
         return
 
     try:
-        with open(config_path, 'r') as f:
+        with open(config_path, "r") as f:
             config = json.load(f)
     except Exception as e:
         print(f"Error reading config: {e}")
@@ -52,7 +54,7 @@ def main():
 
     # Directories to clean as requested
     keys_to_clean = ["parquet_dir", "plots_dir", "report_dir"]
-    
+
     for key in keys_to_clean:
         dir_rel_path = config.get(key)
         if dir_rel_path:
@@ -62,7 +64,7 @@ def main():
             print(f"Warning: Key '{key}' not found in config")
 
     # --- NEW: Specific file cleanup (DuckDB + Emails) ---
-    
+
     # 1. Clean DuckDB
     duck_dir_rel = config.get("duck_dir")
     if duck_dir_rel:
@@ -74,10 +76,10 @@ def main():
             except Exception as e:
                 print(f"Failed to remove DuckDB: {e}")
 
-    # 2. Clean Email HTML files in scr/mailer/
-    # The emailer generates files like email_2025W50.html in scr/mailer/
+    # 2. Clean Email HTML files in src/mailer/
+    # The emailer generates files like email_2025W50.html in src/mailer/
 
-    mailer_dir = project_root / "scr/mailer"
+    mailer_dir = project_root / "src/mailer"
 
     if mailer_dir.exists():
         pattern = re.compile(r"email_\d{4}W\d{2}\.html")
@@ -94,6 +96,7 @@ def main():
                 print(f"Failed to remove email file {email_file}: {e}")
 
     print("Cleanup complete.")
+
 
 if __name__ == "__main__":
     main()

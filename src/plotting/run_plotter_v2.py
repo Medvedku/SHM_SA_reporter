@@ -2,16 +2,14 @@ import subprocess
 import sys
 from pathlib import Path
 
+
 def main():
     # Define the base directory relative to this script
-    # This script is in scr/plotting/
-    # The scripts to run are in scr/plotting/v2_html/
+    # This script is in src/plotting/
+    # The scripts to run are in src/plotting/v2_html/
     current_dir = Path(__file__).parent
     deploy_dir = current_dir / "v2_html"
-    scripts = [
-        deploy_dir / "ducker.py",
-        deploy_dir / "plotter_v2.py"
-    ]
+    scripts = [deploy_dir / "ducker.py", deploy_dir / "plotter_v2.py"]
 
     print("Starting sequential execution of plotter v2 scripts...")
 
@@ -31,6 +29,7 @@ def main():
             print(f"✔ {script.name} finished successfully.")
 
     print("\nAll scripts executed successfully.")
+
 
 if __name__ == "__main__":
     main()

@@ -4,6 +4,7 @@ from pathlib import Path
 
 import numpy as np
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
@@ -15,24 +16,24 @@ import gc
 #  CONFIG & PATHS (RELATIVE TO PROJECT ROOT)
 # ============================================================
 
-# Assuming this file lives in: <project_root>/scr/plotting/plot_functions.py
+# Assuming this file lives in: <project_root>/src/plotting/plot_functions.py
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CONFIG_PATH = PROJECT_ROOT / "config" / "path.json"
 
 with open(CONFIG_PATH, "r") as f:
     paths = json.load(f)
 
-PLOT_PATH  = PROJECT_ROOT / paths["plots_dir"]
-FONT_DIR   = PROJECT_ROOT / paths["font_dir"]
+PLOT_PATH = PROJECT_ROOT / paths["plots_dir"]
+FONT_DIR = PROJECT_ROOT / paths["font_dir"]
 
 # ============================================================
 #  FONTS
 # ============================================================
 
 FONT_REGULAR = FONT_DIR / "Montserrat-Regular.ttf"
-FONT_BLACK   = FONT_DIR / "Montserrat-Black.ttf"
-FONT_MEDIUM  = FONT_DIR / "Montserrat-Medium.ttf"
-FONT_LIGHT   = FONT_DIR / "Montserrat-Light.ttf"
+FONT_BLACK = FONT_DIR / "Montserrat-Black.ttf"
+FONT_MEDIUM = FONT_DIR / "Montserrat-Medium.ttf"
+FONT_LIGHT = FONT_DIR / "Montserrat-Light.ttf"
 
 for fpath in [FONT_REGULAR, FONT_BLACK, FONT_MEDIUM, FONT_LIGHT]:
     font_manager.fontManager.addfont(str(fpath))
@@ -40,9 +41,9 @@ for fpath in [FONT_REGULAR, FONT_BLACK, FONT_MEDIUM, FONT_LIGHT]:
 plt.rcParams["font.family"] = "Montserrat"
 plt.rcParams["font.size"] = 12
 
-TITLE_FONT  = font_manager.FontProperties(fname=str(FONT_MEDIUM), size=14)
-LABEL_FONT  = font_manager.FontProperties(fname=str(FONT_REGULAR), size=12)
-LEGEND_FONT = font_manager.FontProperties(fname=str(FONT_LIGHT),  size=11)
+TITLE_FONT = font_manager.FontProperties(fname=str(FONT_MEDIUM), size=14)
+LABEL_FONT = font_manager.FontProperties(fname=str(FONT_REGULAR), size=12)
+LEGEND_FONT = font_manager.FontProperties(fname=str(FONT_LIGHT), size=11)
 
 # ============================================================
 #  GLOBAL MAPPINGS
@@ -50,52 +51,50 @@ LEGEND_FONT = font_manager.FontProperties(fname=str(FONT_LIGHT),  size=11)
 
 strain_temp_map = {
     "sst_hub1": {"S27": "T4", "S28": "T5", "S29": "T6"},
-    "sst_hub2": {s: "T1" for s in ["S7","S8","S9","S10","S11","S12","S13","S14"]},
-    "sst_hub3": {s: "T2" for s in ["S15","S16","S17","S18"]},
-    "sst_hub4": {s: "T3" for s in ["S19","S20","S21","S22","S23","S24","S25","S26"]},
+    "sst_hub2": {s: "T1" for s in ["S7", "S8", "S9", "S10", "S11", "S12", "S13", "S14"]},
+    "sst_hub3": {s: "T2" for s in ["S15", "S16", "S17", "S18"]},
+    "sst_hub4": {s: "T3" for s in ["S19", "S20", "S21", "S22", "S23", "S24", "S25", "S26"]},
 }
 
 sensor_color_mapping = {
     # ==== Temperature sensors ====
-    'T1': '#bf4054ff',
-    'T2': '#862d3bff',
-    'T3': '#d27987ff',
-    'T4': '#d29779ff',
-    'T5': '#bf6a40ff',
-    'T6': '#864a2dff',
-
+    "T1": "#bf4054ff",
+    "T2": "#862d3bff",
+    "T3": "#d27987ff",
+    "T4": "#d29779ff",
+    "T5": "#bf6a40ff",
+    "T6": "#864a2dff",
     # ==== Accelerometers ====
-    'A30': '#e6196eff',
-    'A31': '#19c3e6ff',
-    'A32': '#e65d19ff',
-    'A33': '#16cc62ff',
-    'A34': '#196ee6ff',
-    'A35': '#e6b219ff',
-
+    "A30": "#e6196eff",
+    "A31": "#19c3e6ff",
+    "A32": "#e65d19ff",
+    "A33": "#16cc62ff",
+    "A34": "#196ee6ff",
+    "A35": "#e6b219ff",
     # ==== Strain sensors ====
-    'S7':  '#2d8652ff',
-    'S8':  '#b3e6c8ff',
-    'S9':  '#79d29eff',
-    'S10': '#40bf75ff',
-    'S11': '#b3c8e6ff',
-    'S12': '#799ed2ff',
-    'S13': '#2d5286ff',
-    'S14': '#4075bfff',
-    'S15': '#e6d9b3ff',
-    'S16': '#866f2dff',
-    'S17': '#bf9f40ff',
-    'S18': '#d2bc79ff',
-    'S19': '#a440bfff',
-    'S20': '#bf79d2ff',
-    'S21': '#732d86ff',
-    'S22': '#b3dce6ff',
-    'S23': '#79c3d2ff',
-    'S24': '#dbb3e6ff',
-    'S25': '#2d7686ff',
-    'S26': '#40a9bfff',
-    'S27': '#79d2b8ff',
-    'S28': '#40bf99ff',
-    'S29': '#2d866bff'
+    "S7": "#2d8652ff",
+    "S8": "#b3e6c8ff",
+    "S9": "#79d29eff",
+    "S10": "#40bf75ff",
+    "S11": "#b3c8e6ff",
+    "S12": "#799ed2ff",
+    "S13": "#2d5286ff",
+    "S14": "#4075bfff",
+    "S15": "#e6d9b3ff",
+    "S16": "#866f2dff",
+    "S17": "#bf9f40ff",
+    "S18": "#d2bc79ff",
+    "S19": "#a440bfff",
+    "S20": "#bf79d2ff",
+    "S21": "#732d86ff",
+    "S22": "#b3dce6ff",
+    "S23": "#79c3d2ff",
+    "S24": "#dbb3e6ff",
+    "S25": "#2d7686ff",
+    "S26": "#40a9bfff",
+    "S27": "#79d2b8ff",
+    "S28": "#40bf99ff",
+    "S29": "#2d866bff",
 }
 
 sensor_legend_mapping = {
@@ -103,16 +102,14 @@ sensor_legend_mapping = {
     "T1": "T1 (North)",
     "T2": "T2 (Middle)",
     "T3": "T3 (South)",
-
     # ==== Temperatures (Column) ====
     "T4": "T4 (Bottom)",
     "T5": "T5 (Middle)",
     "T6": "T6 (Top)",
-
     # ==== Strain sensors ====
-    "S7":  "Arch, Section 1 – Top",
-    "S8":  "Arch, Section 1 – Diagonal",
-    "S9":  "Arch, Section 1 – Bottom Right",
+    "S7": "Arch, Section 1 – Top",
+    "S8": "Arch, Section 1 – Diagonal",
+    "S9": "Arch, Section 1 – Bottom Right",
     "S10": "Arch, Section 1 – Bottom Left",
     "S11": "Arch, Section 2 – Diagonal",
     "S12": "Arch, Section 2 – Bottom Right",
@@ -133,22 +130,23 @@ sensor_legend_mapping = {
     "S27": "Column – Bottom",
     "S28": "Column – Middle",
     "S29": "Column – Top",
-
     # ==== Accelerometers ====
-    'A30': 'Arch (North)',
-    'A31': 'Arch (Middle)',
-    'A32': 'Arch (South)',
-    'A33': 'Column (Bottom)',
-    'A34': 'Column (Middle)',
-    'A35': 'Column (Top)'
+    "A30": "Arch (North)",
+    "A31": "Arch (Middle)",
+    "A32": "Arch (South)",
+    "A33": "Column (Bottom)",
+    "A34": "Column (Middle)",
+    "A35": "Column (Top)",
 }
 
 # ============================================================
 #  HELPERS
 # ============================================================
 
+
 def _ensure_plot_path():
     PLOT_PATH.mkdir(parents=True, exist_ok=True)
+
 
 def set_fonts(ax):
     """Apply consistent fonts to axis, legend, ticks."""
@@ -164,6 +162,7 @@ def set_fonts(ax):
     if leg is not None:
         for text in leg.get_texts():
             text.set_fontproperties(LEGEND_FONT)
+
 
 def resolve_time_window_single_table(con, table, start_dt=None, end_dt=None):
     """
@@ -184,15 +183,14 @@ def resolve_time_window_single_table(con, table, start_dt=None, end_dt=None):
 
     return start_dt, end_dt
 
+
 def resolve_time_window_multi_tables(con, tables, start_dt=None, end_dt=None):
     """
     Resolve time window using MAX(datetime) across multiple tables.
     'tables' is a list of table names.
     """
     if end_dt is None:
-        max_expr = "GREATEST(" + ",".join(
-            [f"(SELECT MAX(datetime) FROM {t})" for t in tables]
-        ) + ") AS max_dt"
+        max_expr = "GREATEST(" + ",".join([f"(SELECT MAX(datetime) FROM {t})" for t in tables]) + ") AS max_dt"
         query = f"SELECT {max_expr}"
         end_dt = con.execute(query).fetchone()[0]
         if end_dt is None:
@@ -210,6 +208,7 @@ def resolve_time_window_multi_tables(con, tables, start_dt=None, end_dt=None):
 # ============================================================
 #  TEMPERATURE PLOTS
 # ============================================================
+
 
 def temps_col(con, start_dt=None, end_dt=None, show=True, save=True, filename="temps_col.png"):
     """
@@ -253,7 +252,9 @@ def temps_col(con, start_dt=None, end_dt=None, show=True, save=True, filename="t
     ax.set_title("Column A7 – Temperatures", fontproperties=TITLE_FONT, pad=18)
     subtitle = "Temperatures T4, T5 and T6 (last week hour mean)"
     ax.text(
-        0.5, 1.01, subtitle,
+        0.5,
+        1.01,
+        subtitle,
         transform=ax.transAxes,
         ha="center",
         fontproperties=LABEL_FONT,
@@ -340,7 +341,9 @@ def temps_arch(con, start_dt=None, end_dt=None, show=True, save=True, filename="
     ax.set_title("Arch – Temperatures", fontproperties=TITLE_FONT, pad=18)
     subtitle = "Temperatures T1, T2 and T3 (last week hour mean)"
     ax.text(
-        0.5, 1.01, subtitle,
+        0.5,
+        1.01,
+        subtitle,
         transform=ax.transAxes,
         ha="center",
         fontproperties=LABEL_FONT,
@@ -376,9 +379,8 @@ def temps_arch(con, start_dt=None, end_dt=None, show=True, save=True, filename="
 #  FFT + KDE PLOT
 # ============================================================
 
-def fft_with_KDE_plot(con, sensor_id, threshold=0.065,
-                      start_dt=None, end_dt=None,
-                      show=True, save=True):
+
+def fft_with_KDE_plot(con, sensor_id, threshold=0.065, start_dt=None, end_dt=None, show=True, save=True):
     """
     Scatter plot of (frequency vs amplitude) for FFT peaks above threshold
     PLUS a KDE of frequency distribution on a secondary y-axis.
@@ -473,9 +475,13 @@ def fft_with_KDE_plot(con, sensor_id, threshold=0.065,
     ax.set_title(f"{label} – FFT + KDE", fontproperties=TITLE_FONT, pad=18)
     subtitle = f"{sensor_id} – peaks above threshold = {threshold} (last 7 days)"
     ax.text(
-        0.5, 1.01, subtitle,
-        transform=ax.transAxes, ha="center",
-        fontproperties=LABEL_FONT, fontsize=11,
+        0.5,
+        1.01,
+        subtitle,
+        transform=ax.transAxes,
+        ha="center",
+        fontproperties=LABEL_FONT,
+        fontsize=11,
     )
 
     ax.set_xlabel("Frequency [Hz]")
@@ -506,8 +512,8 @@ def fft_with_KDE_plot(con, sensor_id, threshold=0.065,
 #  STRAIN + TEMPERATURE PLOT
 # ============================================================
 
-def strain_temp_plot(con, sensor_id, start_dt=None, end_dt=None,
-                     show=True, save=True):
+
+def strain_temp_plot(con, sensor_id, start_dt=None, end_dt=None, show=True, save=True):
     """
     Plot hourly median strain (converted to epsilon mm/m) and temperature
     for a given S-sensor over a custom time window.
@@ -552,36 +558,38 @@ def strain_temp_plot(con, sensor_id, start_dt=None, end_dt=None,
     # 4) Convert strain to epsilon [mm/m]
     CALIB = 3.11e-9
     df_hour["epsilon_raw"] = df_hour["strain_raw"] * CALIB
-    df_hour["epsilon_mm"]  = df_hour["epsilon_raw"] * 1000.0
+    df_hour["epsilon_mm"] = df_hour["epsilon_raw"] * 1000.0
 
     fig, ax1 = plt.subplots(figsize=(11, 6))
 
     strain_color = sensor_color_mapping.get(sensor_id, "#000000")
-    temp_color   = sensor_color_mapping.get(temp_id, "#444444")
+    temp_color = sensor_color_mapping.get(temp_id, "#444444")
 
     strain_label = sensor_legend_mapping.get(sensor_id, sensor_id)
-    temp_label   = sensor_legend_mapping.get(temp_id, temp_id)
+    temp_label = sensor_legend_mapping.get(temp_id, temp_id)
 
     # Strain (primary)
-    ax1.plot(df_hour.index, df_hour["epsilon_mm"],
-             color=strain_color, linewidth=2, label=r"$\varepsilon$")
+    ax1.plot(df_hour.index, df_hour["epsilon_mm"], color=strain_color, linewidth=2, label=r"$\varepsilon$")
 
     ax1.set_ylabel(r"$\varepsilon$ [mm/m]")
     ax1.grid(True, linestyle="--", alpha=0.3)
 
     # Temperature (secondary)
     ax2 = ax1.twinx()
-    ax2.plot(df_hour.index, df_hour["temp"],
-             color=temp_color, linewidth=1.5, label=temp_label)
+    ax2.plot(df_hour.index, df_hour["temp"], color=temp_color, linewidth=1.5, label=temp_label)
     ax2.set_ylabel("T [°C]")
 
     title_label = strain_label
     ax1.set_title(f"{title_label}", fontproperties=TITLE_FONT, pad=18)
     subtitle = f"Strains {sensor_id} & Temp {temp_id} (last week, hour median)"
     ax1.text(
-        0.5, 1.01, subtitle,
-        transform=ax1.transAxes, ha="center",
-        fontproperties=LABEL_FONT, fontsize=11,
+        0.5,
+        1.01,
+        subtitle,
+        transform=ax1.transAxes,
+        ha="center",
+        fontproperties=LABEL_FONT,
+        fontsize=11,
     )
 
     ax1.xaxis.set_major_locator(mdates.DayLocator())
@@ -615,9 +623,8 @@ def strain_temp_plot(con, sensor_id, start_dt=None, end_dt=None,
 #  ACCEL RESULTANT DAILY GRID
 # ============================================================
 
-def accel_v_daily_grid(con, sensor_id,
-                       start_dt=None, end_dt=None,
-                       show=True, save=True):
+
+def accel_v_daily_grid(con, sensor_id, start_dt=None, end_dt=None, show=True, save=True):
     """
     Daily resultant acceleration grid for accelerometer Axx.
     - One subplot per day in the [start_dt, end_dt] window
@@ -690,14 +697,15 @@ def accel_v_daily_grid(con, sensor_id,
     day_labels = []
     for i in range(num_days):
         day_start = start_day + pd.Timedelta(days=i)
-        day_end   = day_start + pd.Timedelta(days=1)
+        day_end = day_start + pd.Timedelta(days=1)
         chunk = df[(df.index >= day_start) & (df.index < day_end)]
         days.append(chunk)
         day_labels.append(day_start.strftime("%d. %b."))
 
     # 5) Create figure
     fig, axes_rows = plt.subplots(
-        num_days, 1,
+        num_days,
+        1,
         figsize=(11, max(4, 0.8 * num_days)),
         sharex=False,
         gridspec_kw={"hspace": 0.15},
@@ -749,7 +757,8 @@ def accel_v_daily_grid(con, sensor_id,
         y=0.97,
     )
     fig.text(
-        0.5, 0.90,
+        0.5,
+        0.90,
         f"{day_labels[0]} – {day_labels[-1]} (last {num_days} full days)",
         ha="center",
         fontproperties=LABEL_FONT,

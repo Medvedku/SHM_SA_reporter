@@ -1,4 +1,3 @@
-
 import subprocess
 import sys
 import argparse
@@ -16,6 +15,7 @@ from pathlib import Path
 # 7. emailer
 # 8. cleaner
 
+
 def get_iso_week_boundaries(year=None, week=None):
     """
     Computes ISO week start (Monday) and end (next Monday).
@@ -29,7 +29,7 @@ def get_iso_week_boundaries(year=None, week=None):
         # Default to previous week
         year = iso_year
         week = iso_week - 1
-        
+
         # Handle year rollover (if week 1 becomes week 0, go to last week of prev year)
         if week <= 0:
             year -= 1
@@ -44,10 +44,11 @@ def get_iso_week_boundaries(year=None, week=None):
     start_dt = datetime.fromisocalendar(year, week, 1).replace(tzinfo=timezone.utc)
     # End date (Next Monday)
     end_dt = start_dt + timedelta(days=7)
-    
+
     # Format for arguments (YYYY-MM-DD)
     # Note: mail_builder might expect just the date part
     return year, week, start_dt.strftime("%Y-%m-%d"), end_dt.strftime("%Y-%m-%d")
+
 
 def run_command(cmd, description):
     print(f"\n🚀 Starting: {description}")
@@ -60,6 +61,7 @@ def run_command(cmd, description):
         print(f"   Exit code: {e.returncode}")
         sys.exit(e.returncode)
 
+
 def main():
     parser = argparse.ArgumentParser(description="Master pipeline for SHM Reporting")
     parser.add_argument("--year", type=int, help="Force specific year")
@@ -69,59 +71,67 @@ def main():
 
     # 1. Determine Timeframe
     year, week, start_date, end_date = get_iso_week_boundaries(args.year, args.week)
-    
-    print("="*60)
+
+    print("=" * 60)
     print(f"SHM REPORTER PIPELINE")
     print(f"Target: Year {year}, Week {week}")
     print(f"Range:  {start_date} -> {end_date}")
-    print("="*60)
+    print("=" * 60)
 
     base_dir = Path(__file__).parent.resolve()
     python_exe = sys.executable
 
     # Define scripts
     script_parqueter = base_dir / "processing/run_parqueter.py"
-    script_plotter   = base_dir / "plotting/run_plotter_v2.py"
-    script_reporter  = base_dir / "report_build/report_builder_v2.py"
-    script_up_parq   = base_dir / "storage/uploader_parquets.py"
-    script_up_rep    = base_dir / "storage/uploader_report.py"
-    script_mail_bld  = base_dir / "mailer/mail_builder.py"
-    script_emailer   = base_dir / "mailer/emailer.py"
-    script_cleaner   = base_dir / "storage/cleaner.py"
+    script_plotter = base_dir / "plotting/run_plotter_v2.py"
+    script_reporter = base_dir / "report_build/report_builder_v2.py"
+    script_up_parq = base_dir / "storage/uploader_parquets.py"
+    script_up_rep = base_dir / "storage/uploader_report.py"
+    script_mail_bld = base_dir / "mailer/mail_builder.py"
+    script_emailer = base_dir / "mailer/emailer.py"
+    script_cleaner = base_dir / "storage/cleaner.py"
 
     # 2. Run Parqueter
-    # python3 scr/processing/run_parqueter.py --year Y --week W
+    # python3 src/processing/run_parqueter.py --year Y --week W
     run_command([python_exe, str(script_parqueter), "--year", str(year), "--week", str(week)], "Parquet Processing")
 
     # 3. Run Plotter
-    # python3 scr/plotting/run_plotter_v2.py
+    # python3 src/plotting/run_plotter_v2.py
     # (Plotter detects time from data, no args needed)
     run_command([python_exe, str(script_plotter)], "Plot Generation")
 
     # 4. Run Report Builder
-    # python3 scr/report_build/report_builder_v2.py --year Y --week W
+    # python3 src/report_build/report_builder_v2.py --year Y --week W
     run_command([python_exe, str(script_reporter), "--year", str(year), "--week", str(week)], "Report Building")
 
     # 5. Upload Parquets
-    # python3 scr/storage/uploader_parquets.py
+    # python3 src/storage/uploader_parquets.py
     run_command([python_exe, str(script_up_parq)], "Uploading Parquets")
 
     # 6. Upload Report
-    # python3 scr/storage/uploader_report.py
+    # python3 src/storage/uploader_report.py
     run_command([python_exe, str(script_up_rep)], "Uploading Report")
 
     # 7. Build Email
-    # python3 scr/mailer/mail_builder.py --year Y --week W --start S --end E
-    run_command([
-        python_exe, str(script_mail_bld), 
-        "--year", str(year), 
-        "--week", str(week),
-        "--start", start_date,
-        "--end", end_date
-    ], "Email Builder")
+    # python3 src/mailer/mail_builder.py --year Y --week W --start S --end E
+    run_command(
+        [
+            python_exe,
+            str(script_mail_bld),
+            "--year",
+            str(year),
+            "--week",
+            str(week),
+            "--start",
+            start_date,
+            "--end",
+            end_date,
+        ],
+        "Email Builder",
+    )
 
     # 8. Send Email
-    # python3 scr/mailer/emailer.py --year Y --week W
+    # python3 src/mailer/emailer.py --year Y --week W
     run_command([python_exe, str(script_emailer), "--year", str(year), "--week", str(week)], "Sending Email")
 
     # 9. Cleaner
@@ -131,6 +141,7 @@ def main():
         print("\n⚠ Skipping cleanup as requested.")
 
     print("\n🎉 PIPELINE COMPLETED SUCCESSFULLY 🎉")
+
 
 if __name__ == "__main__":
     main()

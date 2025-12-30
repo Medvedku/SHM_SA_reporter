@@ -1,9 +1,9 @@
-
 import subprocess
 import sys
 import time
 import psutil
 from pathlib import Path
+
 
 def get_tree_memory_usage(pid):
     """
@@ -22,34 +22,36 @@ def get_tree_memory_usage(pid):
     except (psutil.NoSuchProcess, psutil.AccessDenied):
         return 0
 
+
 def format_bytes(size):
     power = 2**10
     n = 0
-    power_labels = {0 : '', 1: 'K', 2: 'M', 3: 'G', 4: 'T'}
+    power_labels = {0: "", 1: "K", 2: "M", 3: "G", 4: "T"}
     while size > power:
         size /= power
         n += 1
     return f"{size:.2f} {power_labels[n]}B"
 
+
 def main():
     # Resolve paths
     current_dir = Path(__file__).parent.resolve()
     target_script = current_dir / "run_pipeline.py"
-    
+
     if not target_script.exists():
         print(f"Error: Could not find {target_script}")
         return
 
-    # Prepare command: python3 scr/run_pipeline.py [args...]
+    # Prepare command: python3 src/run_pipeline.py [args...]
     cmd = [sys.executable, str(target_script)] + sys.argv[1:]
-    
+
     print("=" * 60)
     print(f"🧠 RAM MONITOR WRAPPER")
     print(f"🚀 Launching: {' '.join(cmd)}")
     print("=" * 60)
-    
+
     start_time = time.time()
-    
+
     # Start the subprocess
     try:
         process = subprocess.Popen(cmd)
@@ -63,15 +65,17 @@ def main():
             # Measure memory
             current_ram = get_tree_memory_usage(process.pid)
             peak_ram = max(peak_ram, current_ram)
-            
+
             # Show live stats
             elapsed = time.time() - start_time
-            sys.stdout.write(f"\r[Running] T: {elapsed:.1f}s | Current RAM: {format_bytes(current_ram)} | Peak RAM: {format_bytes(peak_ram)}   ")
+            sys.stdout.write(
+                f"\r[Running] T: {elapsed:.1f}s | Current RAM: {format_bytes(current_ram)} | Peak RAM: {format_bytes(peak_ram)}   "
+            )
             sys.stdout.flush()
-            
+
             # Sleep briefly to avoid high CPU usage for monitoring
             time.sleep(0.5)
-            
+
     except KeyboardInterrupt:
         print("\n\n⚠ Interrupted by user. Terminating pipeline...")
         process.terminate()
@@ -96,13 +100,14 @@ def main():
         print("✅ Pipeline FINISHED successfully.")
     else:
         print(f"❌ Pipeline FAILED with exit code {return_code}.")
-    
+
     print("-" * 60)
     print(f"⏱  Total Duration : {duration:.2f} seconds")
     print(f"🧠 Peak RAM Usage : {format_bytes(peak_ram)}")
     print("=" * 60)
-    
+
     sys.exit(return_code)
+
 
 if __name__ == "__main__":
     main()

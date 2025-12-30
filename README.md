@@ -92,4 +92,4 @@ Ensure your `.env` file is set up with:
 
 ## Requirements
 This should be enough:\
-`pip install pymongo pyarrow duckdb numpy pandas plotly scipy boto3 python-dotenv`
+`pip install pymongo pyarrow duckdb numpy pandas plotly scipy boto3 python-dotenv psutil requests`

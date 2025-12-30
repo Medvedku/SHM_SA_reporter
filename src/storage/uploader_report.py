@@ -2,7 +2,8 @@ import os
 import json
 import logging
 from pathlib import Path
-from ftplib import FTP
+from google.cloud import storage
+from google.oauth2 import service_account
 from dotenv import load_dotenv
 
 # Configure logging
@@ -11,11 +12,20 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 
-# --- FTP config ---
-FTP_HOST = os.getenv("FTP_HOST")
-FTP_USER = os.getenv("FTP_USER")
-FTP_PASS = os.getenv("FTP_PASS")
-FTP_BASE_DIR = os.getenv("FTP_BASE_DIR", "/")
+# --- GCP config ---
+GCP_CREDENTIALS_JSON = os.getenv("GCP_CREDENTIALS_JSON")
+BUCKET_NAME = "shm-reports"
+
+if not GCP_CREDENTIALS_JSON:
+    raise ValueError("GCP_CREDENTIALS_JSON environment variable is missing!")
+
+# Parse credentials from environment variable
+creds_dict = json.loads(GCP_CREDENTIALS_JSON)
+credentials = service_account.Credentials.from_service_account_info(creds_dict)
+
+# Create GCP Storage client
+client = storage.Client(credentials=credentials, project=creds_dict["project_id"])
+bucket = client.bucket(BUCKET_NAME)
 
 # --- repo root ---
 ROOT = Path(__file__).resolve().parents[2]
@@ -29,18 +39,12 @@ REPORTS_DIR = ROOT / PATHS["report_dir"]
 if not REPORTS_DIR.exists():
     raise FileNotFoundError(f"Reports dir not found: {REPORTS_DIR}")
 
-# --- connect to FTP ---
-ftp = FTP(FTP_HOST, timeout=15)
-ftp.login(FTP_USER, FTP_PASS)
-ftp.cwd(FTP_BASE_DIR)
-
-logger.info(f"Connected to FTP: {FTP_HOST}")
-logger.info(f"Remote dir: {FTP_BASE_DIR}")
+logger.info(f"Connected to GCP Storage")
+logger.info(f"Bucket: {BUCKET_NAME}")
 logger.info(f"Local reports: {REPORTS_DIR}")
 
 # --- get remote file list ---
-remote_files = set()
-ftp.retrlines("NLST", remote_files.add)
+remote_files = {blob.name for blob in bucket.list_blobs()}
 
 # --- upload missing reports ---
 local_files = sorted(p for p in REPORTS_DIR.iterdir() if p.is_file())
@@ -52,8 +56,7 @@ for lf in local_files:
 
     logger.info(f"UPLOADING: {lf.name}")
 
-    with open(lf, "rb") as f:
-        ftp.storbinary(f"STOR {lf.name}", f)
+    blob = bucket.blob(lf.name)
+    blob.upload_from_filename(str(lf))
 
 logger.info("Report sync complete")
-ftp.quit()

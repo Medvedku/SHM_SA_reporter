@@ -1,0 +1,8 @@
+services:
+
+  shm-sa-reporter:
+    build: .
+    environment:
+      - LOG_LEVEL=INFO
+    env_file:
+      - .env

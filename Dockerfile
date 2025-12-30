@@ -18,7 +18,7 @@ RUN uv sync
 # RUN mkdir -p /app/data
 
 # rest of the files goes here
-COPY config/path.json ./config
+COPY config/ ./config/
 COPY main.py .
 COPY src/ ./src
 

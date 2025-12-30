@@ -10,7 +10,9 @@ __pycache__/
 *.pyc
 *.pyo
 
-
+.history
+.venv
+venv
 
 
 email_variant_1.html

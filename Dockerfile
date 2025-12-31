@@ -31,5 +31,8 @@ RUN chmod +x /app/main.sh /app/scr/run_pipeline.sh
 # Set environment variable for Python executable
 ENV PYTHON_EXE=python3
 
+# Define volumes for data persistence (optional - can be mounted at runtime)
+VOLUME ["/app/data", "/app/plots", "/app/reports"]
+
 # Default command - run the pipeline
 ENTRYPOINT ["/app/main.sh"]

@@ -26,7 +26,7 @@ ENV
 *.swo
 *~
 
-# Data directories (will be mounted as volumes)
+# Data directories (optional volumes - can be mounted at runtime)
 data/
 plots/
 reports/

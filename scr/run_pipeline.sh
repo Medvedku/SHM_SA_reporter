@@ -2,7 +2,7 @@
 
 # SHM Reporter Pipeline - Bash Version
 # Master pipeline for SHM Reporting
-# Orchestrates: parqueter -> plotter -> reporter -> uploaders -> emailer -> cleaner
+# Orchestrates: parqueter -> plotter -> reporter -> uploaders -> emailer
 
 set -e  # Exit on error
 
@@ -15,7 +15,6 @@ set -e  # Exit on error
 # 5. uploader_report
 # 6. mail_builder
 # 7. emailer
-# 8. cleaner
 
 # --- Helper Functions ---
 
@@ -104,13 +103,11 @@ Master pipeline for SHM Reporting
 Options:
     --year YEAR          Force specific year
     --week WEEK          Force specific ISO week number
-    --skip-cleaned       Skip cleanup step (keep temporary files)
     -h, --help          Show this help message
 
 Examples:
     $0                              # Run for previous week
     $0 --year 2025 --week 48        # Run for specific week
-    $0 --skip-cleaned               # Run without cleanup
 
 EOF
 }
@@ -118,7 +115,6 @@ EOF
 # --- Argument Parsing ---
 YEAR=""
 WEEK=""
-SKIP_CLEANED=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -129,10 +125,6 @@ while [[ $# -gt 0 ]]; do
         --week)
             WEEK="$2"
             shift 2
-            ;;
-        --skip-cleaned)
-            SKIP_CLEANED=true
-            shift
             ;;
         -h|--help)
             show_help
@@ -169,7 +161,6 @@ SCRIPT_UP_PARQ="$SCRIPT_DIR/storage/uploader_parquets.py"
 SCRIPT_UP_REP="$SCRIPT_DIR/storage/uploader_report.py"
 SCRIPT_MAIL_BLD="$SCRIPT_DIR/mailer/mail_builder.py"
 SCRIPT_EMAILER="$SCRIPT_DIR/mailer/emailer.py"
-SCRIPT_CLEANER="$SCRIPT_DIR/storage/cleaner.py"
 
 # 2. Run Parqueter
 run_command "Parquet Processing" \
@@ -198,15 +189,6 @@ run_command "Email Builder" \
 # 8. Send Email
 run_command "Sending Email" \
     "$PYTHON_EXE" "$SCRIPT_EMAILER" --year "$YEAR" --week "$WEEK"
-
-# 9. Cleaner
-if [ "$SKIP_CLEANED" = false ]; then
-    run_command "Cleanup" \
-        "$PYTHON_EXE" "$SCRIPT_CLEANER"
-else
-    echo ""
-    echo "⚠ Skipping cleanup as requested."
-fi
 
 echo ""
 echo "🎉 PIPELINE COMPLETED SUCCESSFULLY 🎉"

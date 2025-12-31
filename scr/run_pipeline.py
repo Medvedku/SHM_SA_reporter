@@ -14,7 +14,6 @@ from pathlib import Path
 # 5. uploader_report
 # 6. mail_builder
 # 7. emailer
-# 8. cleaner
 
 def get_iso_week_boundaries(year=None, week=None):
     """
@@ -64,7 +63,6 @@ def main():
     parser = argparse.ArgumentParser(description="Master pipeline for SHM Reporting")
     parser.add_argument("--year", type=int, help="Force specific year")
     parser.add_argument("--week", type=int, help="Force specific week")
-    parser.add_argument("--skip-cleaned", action="store_true", help="Skip cleanup step")
     args = parser.parse_args()
 
     # 1. Determine Timeframe
@@ -87,7 +85,6 @@ def main():
     script_up_rep    = base_dir / "storage/uploader_report.py"
     script_mail_bld  = base_dir / "mailer/mail_builder.py"
     script_emailer   = base_dir / "mailer/emailer.py"
-    script_cleaner   = base_dir / "storage/cleaner.py"
 
     # 2. Run Parqueter
     # python3 scr/processing/run_parqueter.py --year Y --week W
@@ -123,12 +120,6 @@ def main():
     # 8. Send Email
     # python3 scr/mailer/emailer.py --year Y --week W
     run_command([python_exe, str(script_emailer), "--year", str(year), "--week", str(week)], "Sending Email")
-
-    # 9. Cleaner
-    if not args.skip_cleaned:
-        run_command([python_exe, str(script_cleaner)], "Cleanup")
-    else:
-        print("\n⚠ Skipping cleanup as requested.")
 
     print("\n🎉 PIPELINE COMPLETED SUCCESSFULLY 🎉")
 

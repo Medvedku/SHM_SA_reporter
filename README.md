@@ -31,12 +31,11 @@ By default, the script calculates the **previous ISO week** and runs the pipelin
 | :--- | :--- | :--- |
 | `--year` | Force a specific year | `--year 2025` |
 | `--week` | Force a specific ISO week number | `--week 50` |
-| `--skip-cleaned` | Skip the final cleanup step (keep parquets/plots) | `--skip-cleaned` |
 | `-h, --help` | Show help message | `--help` |
 
 **Example: Reprocessing a specific week:**
 ```bash
-./main.sh --year 2025 --week 48 --skip-cleaned
+./main.sh --year 2025 --week 48
 ```
 
 ### Option 2: Python Script (Legacy)
@@ -50,7 +49,22 @@ python3 scr/run_pipeline.py
 
 **Example: Reprocessing a specific week:**
 ```bash
-python3 scr/run_pipeline.py --year 2025 --week 48 --skip-cleaned
+python3 scr/run_pipeline.py --year 2025 --week 48
+```
+
+### Option 3: Docker Container
+
+Run the pipeline in a containerized environment:
+
+```bash
+# Build the Docker image
+docker build -t shm-reporter .
+
+# Run for the previous week
+docker run --rm --env-file .env shm-reporter
+
+# Run for a specific week
+docker run --rm --env-file .env shm-reporter --year 2025 --week 48
 ```
 
 ### Automatic Scheduling (Cron)
@@ -96,9 +110,7 @@ To schedule the report to run automatically (e.g., every Monday at 02:00 AM).
    - Generates an HTML email summary.
    - Sends the email to recipients defined in `.env`.
 
-7. **Cleaner** (`cleaner.py`)
-   - Removes temporary files (Parquets, Plots, DuckDB) to save space.
-   - *Can be skipped with* `--skip-cleaned`.
+**Note:** For containerized deployments, cleanup of temporary files is handled automatically by the container lifecycle.
 
 ---
 

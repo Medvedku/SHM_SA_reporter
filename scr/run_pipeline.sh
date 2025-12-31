@@ -47,9 +47,6 @@ get_iso_week_boundaries() {
     local year="$1"
     local week="$2"
     
-    # Get current date in UTC
-    local now_utc=$(date -u +"%Y-%m-%d")
-    
     # If year or week not specified, use previous week
     if [ -z "$year" ] || [ -z "$week" ]; then
         # Get current ISO year and week
@@ -59,25 +56,41 @@ get_iso_week_boundaries() {
         year=$iso_year
         week=$((iso_week - 1))
         
-        # Handle year rollover
+        # Handle year rollover (when current week is 1, previous week is in previous year)
         if [ $week -le 0 ]; then
             year=$((year - 1))
             # Get last week of previous year (usually 52 or 53)
-            week=$(date -d "${year}-12-28" +"%V")
+            # December 28th is always in the last week of the year per ISO 8601
+            local last_week=$(date -d "${year}-12-28" +"%V" 2>/dev/null)
+            if [ $? -ne 0 ] || [ -z "$last_week" ]; then
+                # Fallback: most years have 52 weeks, some have 53
+                last_week=52
+            fi
+            week=$last_week
         fi
     fi
     
-    # Calculate start date (Monday of that week)
-    # ISO 8601: Week starts on Monday
-    local start_date=$(date -d "${year}-01-04 +$(( (week - 1) * 7 )) days - $(date -d ${year}-01-04 +%u) days + 1 day" +"%Y-%m-%d" 2>/dev/null)
+    # Calculate start date (Monday of that week) using Python for reliability
+    # This is more reliable than complex date arithmetic across different systems
+    local start_date
+    start_date=$(python3 -c "from datetime import datetime; print(datetime.fromisocalendar($year, $week, 1).strftime('%Y-%m-%d'))" 2>/dev/null)
     
-    # If the above fails, use a simpler approach with Python
+    # Error handling for Python calculation
     if [ $? -ne 0 ] || [ -z "$start_date" ]; then
-        start_date=$(python3 -c "from datetime import datetime; print(datetime.fromisocalendar($year, $week, 1).strftime('%Y-%m-%d'))")
+        echo "Error: Failed to calculate ISO week boundaries. Python datetime module required." >&2
+        exit 1
     fi
     
     # Calculate end date (next Monday, 7 days later)
-    local end_date=$(date -d "$start_date + 7 days" +"%Y-%m-%d")
+    local end_date=$(date -d "$start_date + 7 days" +"%Y-%m-%d" 2>/dev/null)
+    if [ $? -ne 0 ] || [ -z "$end_date" ]; then
+        # Fallback using Python
+        end_date=$(python3 -c "from datetime import datetime, timedelta; d = datetime.strptime('$start_date', '%Y-%m-%d'); print((d + timedelta(days=7)).strftime('%Y-%m-%d'))" 2>/dev/null)
+        if [ $? -ne 0 ] || [ -z "$end_date" ]; then
+            echo "Error: Failed to calculate end date." >&2
+            exit 1
+        fi
+    fi
     
     echo "$year $week $start_date $end_date"
 }

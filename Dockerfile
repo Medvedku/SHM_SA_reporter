@@ -8,8 +8,7 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements (based on README dependencies)
-# Install Python dependencies
+# Install Python dependencies (based on README)
 RUN pip install --no-cache-dir \
     pymongo \
     pyarrow \

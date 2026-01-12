@@ -4,8 +4,8 @@ from pathlib import Path
 
 def main():
     # Define the base directory relative to this script
-    # This script is in scr/plotting/
-    # The scripts to run are in scr/plotting/v2_html/
+    # This script is in src/plotting/
+    # The scripts to run are in src/plotting/v2_html/
     current_dir = Path(__file__).parent
     deploy_dir = current_dir / "v2_html"
     scripts = [

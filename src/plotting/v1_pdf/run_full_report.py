@@ -6,7 +6,7 @@ This script executes `plotter.py` (which prompts for END date), then
 figure files from the project's `plots` directory.
 
 Usage:
-  python3 scr/plotting/run_full_report.py --end-date 2025-11-23 --yes
+  python3 src/plotting/run_full_report.py --end-date 2025-11-23 --yes
 
 If `--end-date` is not provided the script will prompt interactively.
 Pass `--yes` to avoid a deletion confirmation prompt.

@@ -90,28 +90,28 @@ def main():
     script_cleaner   = base_dir / "storage/cleaner.py"
 
     # 2. Run Parqueter
-    # python3 scr/processing/run_parqueter.py --year Y --week W
+    # python3 src/processing/run_parqueter.py --year Y --week W
     run_command([python_exe, str(script_parqueter), "--year", str(year), "--week", str(week)], "Parquet Processing")
 
     # 3. Run Plotter
-    # python3 scr/plotting/run_plotter_v2.py
+    # python3 src/plotting/run_plotter_v2.py
     # (Plotter detects time from data, no args needed)
     run_command([python_exe, str(script_plotter)], "Plot Generation")
 
     # 4. Run Report Builder
-    # python3 scr/report_build/report_builder_v2.py --year Y --week W
+    # python3 src/report_build/report_builder_v2.py --year Y --week W
     run_command([python_exe, str(script_reporter), "--year", str(year), "--week", str(week)], "Report Building")
 
     # 5. Upload Parquets
-    # python3 scr/storage/uploader_parquets.py
+    # python3 src/storage/uploader_parquets.py
     run_command([python_exe, str(script_up_parq)], "Uploading Parquets")
 
     # 6. Upload Report
-    # python3 scr/storage/uploader_report.py
+    # python3 src/storage/uploader_report.py
     run_command([python_exe, str(script_up_rep)], "Uploading Report")
 
     # 7. Build Email
-    # python3 scr/mailer/mail_builder.py --year Y --week W --start S --end E
+    # python3 src/mailer/mail_builder.py --year Y --week W --start S --end E
     run_command([
         python_exe, str(script_mail_bld), 
         "--year", str(year), 
@@ -121,7 +121,7 @@ def main():
     ], "Email Builder")
 
     # 8. Send Email
-    # python3 scr/mailer/emailer.py --year Y --week W
+    # python3 src/mailer/emailer.py --year Y --week W
     run_command([python_exe, str(script_emailer), "--year", str(year), "--week", str(week)], "Sending Email")
 
     # 9. Cleaner

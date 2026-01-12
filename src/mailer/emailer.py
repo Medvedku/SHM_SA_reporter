@@ -25,7 +25,7 @@ def send_email(year, week):
         return
 
     # Construct file path
-    # Assuming this script is in scr/mailer/ where email files are also generated
+    # Assuming this script is in src/mailer/ where email files are also generated
     base_dir = Path(__file__).parent.absolute()
     html_filename = f"email_{year}W{int(week):02d}.html"
     html_path = base_dir / html_filename
@@ -63,7 +63,7 @@ def send_email(year, week):
             smtp.send_message(msg)
         print(f"Email sent successfully to: {', '.join(RECIPIENTS)}")
         
-        # Cleanup is now handled by scr/storage/cleaner.py
+        # Cleanup is now handled by src/storage/cleaner.py
 
 
     except Exception as e:

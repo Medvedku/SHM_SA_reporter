@@ -26,7 +26,7 @@ def _ensure_plot_path():
         pass
 
 
-# # Assuming this file lives in: <project_root>/scr/plotting/plot_functions.py
+# # Assuming this file lives in: <project_root>/src/plotting/plot_functions.py
 # PROJECT_ROOT = Path(__file__).resolve().parents[2]
 # CONFIG_PATH = PROJECT_ROOT / "config" / "path.json"
 

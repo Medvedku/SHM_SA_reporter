@@ -8,7 +8,7 @@ This project connects to a remote MongoDB, processes sensor data into Parquet/Du
 
 ## 🚀 How to Run
 
-The entire pipeline is orchestrated by a single script: **`scr/run_pipeline.py`**.
+The entire pipeline is orchestrated by a single script: **`src/run_pipeline.py`**.
 
 ### 1. Manual Execution
 
@@ -16,7 +16,7 @@ By default, the script calculates the **previous ISO week** and runs the pipelin
 
 ```bash
 # Run for the previous week
-python3 scr/run_pipeline.py
+python3 src/run_pipeline.py
 ```
 
 #### Options
@@ -29,7 +29,7 @@ python3 scr/run_pipeline.py
 
 **Example: Reprocessing a specific week:**
 ```bash
-python3 scr/run_pipeline.py --year 2025 --week 48 --skip-cleaned
+python3 src/run_pipeline.py --year 2025 --week 48 --skip-cleaned
 ```
 
 ### 2. Automatic Scheduling (Cron)
@@ -43,7 +43,7 @@ To schedule the report to run automatically (e.g., every Monday at 02:00 AM).
 2. Add the line below (adjust paths to your actual environment):
    ```bash
    # Run SHM Reporter every Monday at 2:00 AM
-   0 2 * * 1 /usr/bin/python3 /home/moshe/Documents/GitHub/SHM_SA_reporter/scr/run_pipeline.py >> /home/user/logs/shm_reporter.log 2>&1
+   0 2 * * 1 /usr/bin/python3 /home/moshe/Documents/GitHub/SHM_SA_reporter/src/run_pipeline.py >> /home/user/logs/shm_reporter.log 2>&1
    ```
 
 ---

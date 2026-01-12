@@ -28,8 +28,8 @@ def clean_directory(directory_path):
 
 def main():
     # Resolve the project root relative to this script
-    # Script is in scr/storage/cleaner.py 
-    # path: .../SHM_SA_reporter/scr/storage/cleaner.py
+    # Script is in src/storage/cleaner.py 
+    # path: .../SHM_SA_reporter/src/storage/cleaner.py
     # parents[0] = storage
     # parents[1] = scr
     # parents[2] = SHM_SA_reporter (Root)
@@ -74,10 +74,10 @@ def main():
             except Exception as e:
                 print(f"Failed to remove DuckDB: {e}")
 
-    # 2. Clean Email HTML files in scr/mailer/
-    # The emailer generates files like email_2025W50.html in scr/mailer/
+    # 2. Clean Email HTML files in src/mailer/
+    # The emailer generates files like email_2025W50.html in src/mailer/
 
-    mailer_dir = project_root / "scr/mailer"
+    mailer_dir = project_root / "src/mailer"
 
     if mailer_dir.exists():
         pattern = re.compile(r"email_\d{4}W\d{2}\.html")

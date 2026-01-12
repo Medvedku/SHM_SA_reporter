@@ -6,7 +6,7 @@ its memory usage (and descendants when possible). It prints updates
 and writes a summary JSON with peak RSS in KB.
 
 Usage:
-  python3 scr/plotting/run_with_ram.py --end-date 2025-11-23 --yes
+  python3 src/plotting/run_with_ram.py --end-date 2025-11-23 --yes
 
 Options:
   --interval N   Sampling interval in seconds (default 1)

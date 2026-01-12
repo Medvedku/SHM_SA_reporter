@@ -40,7 +40,7 @@ def main():
     import json
     
     # Robustly find config/path.json relative to this script
-    # script is in scr/processing/ -> root is ../../
+    # script is in src/processing/ -> root is ../../
     script_dir = Path(__file__).resolve().parent
     repo_root = script_dir.parent.parent
     config_path = repo_root / "config" / "path.json"
@@ -56,7 +56,7 @@ def main():
         # But usually data/ is in root.
         # So we should probably prepend repo_root if it's relative?
         # The writer uses it as base_dir.
-        # If I pass "data/parquet/", and run from scr/processing/, it will try scr/processing/data/parquet/
+        # If I pass "data/parquet/", and run from src/processing/, it will try src/processing/data/parquet/
         # UNLESS the user runs from root.
         
         # To be safe, let's make it absolute based on repo_root

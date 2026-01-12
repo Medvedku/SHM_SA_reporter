@@ -28,7 +28,7 @@ def run(week, year):
     import json
     
     script_dir = Path(__file__).resolve().parent
-    # scr/processing/parqueter_v2 -> ../../../
+    # src/processing/parqueter_v2 -> ../../../
     repo_root = script_dir.parent.parent.parent
     config_path = repo_root / "config" / "path.json"
     

@@ -40,7 +40,7 @@ def main():
         print(f"Error: Could not find {target_script}")
         return
 
-    # Prepare command: python3 scr/run_pipeline.py [args...]
+    # Prepare command: python3 src/run_pipeline.py [args...]
     cmd = [sys.executable, str(target_script)] + sys.argv[1:]
     
     print("=" * 60)

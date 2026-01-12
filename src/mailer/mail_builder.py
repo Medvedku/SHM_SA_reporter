@@ -38,17 +38,18 @@ def build_mail(year, week, start_date_arg, end_date_arg):
 
     # Replace placeholders
     # The template uses {year}, {week}, {date_from}, {date_to}
+    week_str = f"{int(week):02d}"
     try:
         filled_content = template_content.format(
             year=year,
-            week=week,
+            week=week_str,
             date_from=display_start,
             date_to=display_end
         )
     except KeyError as e:
         # Fallback if format fails due to extra braces (like CSS)
         filled_content = template_content.replace('{year}', str(year)) \
-                                         .replace('{week}', str(week)) \
+                                         .replace('{week}', week_str) \
                                          .replace('{date_from}', str(display_start)) \
                                          .replace('{date_to}', str(display_end))
 

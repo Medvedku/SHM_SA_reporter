@@ -252,11 +252,12 @@ def main():
     content = template.read_text(encoding="utf-8")
 
     start, end = get_week_dates(args.year, args.week)
+    week_str = f"{args.week:02d}"
 
     content = content.replace("{YEAR}", str(args.year))
-    content = content.replace("{ISOWEEK}", str(args.week))
+    content = content.replace("{ISOWEEK}", week_str)
     content = content.replace("{2025}", str(args.year))
-    content = content.replace("{50}", str(args.week))
+    content = content.replace("{50}", week_str)
 
     dates = re.findall(r"\{\d{1,2}\.\s+\w+\s+\d{4}\}", content)
     if dates:

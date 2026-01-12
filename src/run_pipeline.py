@@ -72,7 +72,7 @@ def main():
     
     print("="*60)
     print(f"SHM REPORTER PIPELINE")
-    print(f"Target: Year {year}, Week {week}")
+    print(f"Target: Year {year}, Week {week:02d}")
     print(f"Range:  {start_date} -> {end_date}")
     print("="*60)
 

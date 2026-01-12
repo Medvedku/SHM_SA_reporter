@@ -41,14 +41,15 @@ def send_email(year, week):
         print(f"Error reading HTML file: {e}")
         return
 
+    week_str = f"{int(week):02d}"
     msg = EmailMessage()
-    msg["Subject"] = f"PRJ-16 Report - {year} Week {week}"
+    msg["Subject"] = f"PRJ-16 Report - {year} Week {week_str}"
     msg["From"] = SMTP_USER
     msg["To"] = ", ".join(RECIPIENTS)
 
     # Plain text fallback
     msg.set_content(
-        f"SHM Report for {year} Week {week}.\n"
+        f"SHM Report for {year} Week {week_str}.\n"
         "Your email client does not support HTML view.\n"
         "Please enable HTML or use a different client."
     )
